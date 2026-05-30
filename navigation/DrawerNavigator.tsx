@@ -2,6 +2,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import CustomDrawerContent from './CustomDrawerContent';
 import HomeScreen from '../screens/HomeScreen';
+import UsuariosScreen from '../screens/usuarios/UsuariosScreen';
 
 const Drawer = createDrawerNavigator();
 
@@ -17,6 +18,7 @@ export default function DrawerNavigator({ onLogout }: Props) {
       )}
     >
       <Drawer.Screen name="Inicio" component={HomeScreen} />
+      <Drawer.Screen name="Usuarios" component={UsuariosScreen} />
     </Drawer.Navigator>
   );
 }
