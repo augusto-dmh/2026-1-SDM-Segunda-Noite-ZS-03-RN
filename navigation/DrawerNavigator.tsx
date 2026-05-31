@@ -5,6 +5,7 @@ import AnfitrioesScreen from '../screens/anfitrioes/AnfitrioesScreen';
 import CriarAnfitriaoScreen from '../screens/anfitrioes/CriarAnfitriaoScreen';
 import EditarAnfitriaoScreen from '../screens/anfitrioes/EditarAnfitriaoScreen';
 import CriarEnderecoScreen from '../screens/enderecos/CriarEnderecoScreen';
+import EditarEnderecoScreen from '../screens/enderecos/EditarEnderecoScreen';
 import EnderecosScreen from '../screens/enderecos/EnderecosScreen';
 import HomeScreen from '../screens/HomeScreen';
 import CriarHospedeScreen from '../screens/hospedes/CriarHospedeScreen';
@@ -36,6 +37,11 @@ export default function DrawerNavigator({ onLogout }: Props) {
         name="CriarEndereco"
         component={CriarEnderecoScreen}
         options={{ drawerItemStyle: { display: 'none' }, title: 'Criar endereço' }}
+      />
+      <Drawer.Screen
+        name="EditarEndereco"
+        component={EditarEnderecoScreen}
+        options={{ drawerItemStyle: { display: 'none' }, title: 'Editar endereço' }}
       />
       <Drawer.Screen
         name="CriarAnfitriao"
