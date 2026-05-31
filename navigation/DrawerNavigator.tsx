@@ -23,6 +23,9 @@ import EditarAvaliacaoScreen from '../screens/avaliacoes/EditarAvaliacaoScreen';
 import HospedagensScreen from '../screens/hospedagens/HospedagensScreen';
 import CriarHospedagemScreen from '../screens/hospedagens/CriarHospedagemScreen';
 import EditarHospedagemScreen from '../screens/hospedagens/EditarHospedagemScreen';
+import ReservasScreen from '../screens/reservas/ReservasScreen';
+import CriarReservaScreen from '../screens/reservas/CriarReservaScreen';
+import EditarReservaScreen from '../screens/reservas/EditarReservaScreen';
 
 const Drawer = createDrawerNavigator();
 
@@ -92,6 +95,17 @@ export default function DrawerNavigator({ onLogout }: Props) {
         name="EditarHospedagem"
         component={EditarHospedagemScreen}
         options={{ drawerItemStyle: { display: 'none' }, title: 'Editar hospedagem' }}
+      />
+      <Drawer.Screen name="Reservas" component={ReservasScreen} />
+      <Drawer.Screen
+        name="CriarReserva"
+        component={CriarReservaScreen}
+        options={{ drawerItemStyle: { display: 'none' }, title: 'Criar reserva' }}
+      />
+      <Drawer.Screen
+        name="EditarReserva"
+        component={EditarReservaScreen}
+        options={{ drawerItemStyle: { display: 'none' }, title: 'Editar reserva' }}
       />
       <Drawer.Screen name="Comodidades" component={ComodidadesScreen} />
       <Drawer.Screen
