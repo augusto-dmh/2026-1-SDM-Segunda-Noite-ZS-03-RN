@@ -21,6 +21,9 @@ export type CampoFormulario = {
   multiline?: boolean;
   booleano?: boolean;
   valorPadrao?: string | boolean;
+  numero?: boolean;
+  selecao?: { valor: string; nome: string }[];
+  separadoPorVirgula?: boolean;
 };
 
 type Props = {
@@ -32,14 +35,18 @@ export default function TelaFormulario({ endpoint, campos }: Props) {
   const navigation = useNavigation<any>();
   const route = useRoute<any>();
   const item = route.params?.item;
-  const [valores, setValores] = useState<Record<string, string | boolean>>(() =>
-    campos.reduce(
-      (dados, campo) => ({
-        ...dados,
-        [campo.nome]: item?.[campo.nome] ?? campo.valorPadrao ?? '',
-      }),
-      {},
-    ),
+  const [valores, setValores] = useState<Record<string, string | boolean>>(
+    () =>
+      campos.reduce(
+        (dados, campo) => {
+          let valorInicial = item?.[campo.nome] ?? campo.valorPadrao ?? '';
+          if (campo.separadoPorVirgula && Array.isArray(valorInicial)) {
+            valorInicial = (valorInicial as number[]).join(',');
+          }
+          return { ...dados, [campo.nome]: String(valorInicial) };
+        },
+        {} as Record<string, string | boolean>,
+      ),
   );
   const [salvando, setSalvando] = useState(false);
 
@@ -51,10 +58,24 @@ export default function TelaFormulario({ endpoint, campos }: Props) {
     try {
       setSalvando(true);
 
+      const dados: Record<string, any> = { ...valores };
+
+      for (const campo of campos) {
+        if (campo.numero && dados[campo.nome] !== '') {
+          dados[campo.nome] = Number(dados[campo.nome]);
+        }
+        if (campo.separadoPorVirgula) {
+          const texto = String(dados[campo.nome] || '');
+          dados[campo.nome] = texto
+            ? texto.split(',').map((v: string) => Number(v.trim()))
+            : [];
+        }
+      }
+
       if (item) {
-        await api.put(`${endpoint}${item.id}/`, valores);
+        await api.put(`${endpoint}${item.id}/`, dados);
       } else {
-        await api.post(endpoint, valores);
+        await api.post(endpoint, dados);
       }
 
       navigation.goBack();
@@ -67,16 +88,51 @@ export default function TelaFormulario({ endpoint, campos }: Props) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {campos.map((campo) =>
-        campo.booleano ? (
-          <View key={campo.nome} style={styles.linha}>
-            <Text style={styles.label}>{campo.label}</Text>
-            <Switch
-              value={Boolean(valores[campo.nome])}
-              onValueChange={(valor) => alterar(campo.nome, valor)}
-            />
-          </View>
-        ) : (
+      {campos.map((campo) => {
+        if (campo.booleano) {
+          return (
+            <View key={campo.nome} style={styles.linha}>
+              <Text style={styles.label}>{campo.label}</Text>
+              <Switch
+                value={Boolean(valores[campo.nome])}
+                onValueChange={(valor) => alterar(campo.nome, valor)}
+              />
+            </View>
+          );
+        }
+
+        if (campo.selecao) {
+          return (
+            <View key={campo.nome} style={{ marginBottom: 12 }}>
+              <Text style={styles.label}>{campo.label}</Text>
+              <View style={styles.selecaoContainer}>
+                {campo.selecao.map((opcao) => (
+                  <Pressable
+                    key={opcao.valor}
+                    style={[
+                      styles.selecaoBotao,
+                      valores[campo.nome] === opcao.valor &&
+                        styles.selecaoAtivo,
+                    ]}
+                    onPress={() => alterar(campo.nome, opcao.valor)}
+                  >
+                    <Text
+                      style={[
+                        styles.selecaoTexto,
+                        valores[campo.nome] === opcao.valor &&
+                          styles.selecaoTextoAtivo,
+                      ]}
+                    >
+                      {opcao.nome}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+            </View>
+          );
+        }
+
+        return (
           <CampoTexto
             key={campo.nome}
             label={campo.label}
@@ -85,8 +141,8 @@ export default function TelaFormulario({ endpoint, campos }: Props) {
             keyboardType={campo.keyboardType}
             multiline={campo.multiline}
           />
-        ),
-      )}
+        );
+      })}
       <Pressable style={styles.botao} onPress={salvar} disabled={salvando}>
         <Text style={styles.textoBotao}>
           {salvando ? 'Salvando...' : 'Salvar'}
@@ -107,6 +163,31 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   label: {
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  selecaoContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  selecaoBotao: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 6,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    backgroundColor: '#fff',
+  },
+  selecaoAtivo: {
+    backgroundColor: '#2563eb',
+    borderColor: '#2563eb',
+  },
+  selecaoTexto: {
+    color: '#333',
+  },
+  selecaoTextoAtivo: {
+    color: '#fff',
     fontWeight: 'bold',
   },
   botao: {
