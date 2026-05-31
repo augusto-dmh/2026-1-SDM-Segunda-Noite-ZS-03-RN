@@ -3,6 +3,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import CustomDrawerContent from './CustomDrawerContent';
 import HomeScreen from '../screens/HomeScreen';
 import CriarHospedeScreen from '../screens/hospedes/CriarHospedeScreen';
+import EditarHospedeScreen from '../screens/hospedes/EditarHospedeScreen';
 import HospedesScreen from '../screens/hospedes/HospedesScreen';
 import CriarUsuarioScreen from '../screens/usuarios/CriarUsuarioScreen';
 import EditarUsuarioScreen from '../screens/usuarios/EditarUsuarioScreen';
@@ -28,6 +29,11 @@ export default function DrawerNavigator({ onLogout }: Props) {
         name="CriarHospede"
         component={CriarHospedeScreen}
         options={{ drawerItemStyle: { display: 'none' }, title: 'Criar hóspede' }}
+      />
+      <Drawer.Screen
+        name="EditarHospede"
+        component={EditarHospedeScreen}
+        options={{ drawerItemStyle: { display: 'none' }, title: 'Editar hóspede' }}
       />
       <Drawer.Screen
         name="CriarUsuario"
