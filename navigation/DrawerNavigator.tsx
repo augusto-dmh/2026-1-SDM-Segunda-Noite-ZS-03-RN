@@ -2,6 +2,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import CustomDrawerContent from './CustomDrawerContent';
 import HomeScreen from '../screens/HomeScreen';
+import HospedesScreen from '../screens/hospedes/HospedesScreen';
 import CriarUsuarioScreen from '../screens/usuarios/CriarUsuarioScreen';
 import EditarUsuarioScreen from '../screens/usuarios/EditarUsuarioScreen';
 import UsuariosScreen from '../screens/usuarios/UsuariosScreen';
@@ -21,6 +22,7 @@ export default function DrawerNavigator({ onLogout }: Props) {
     >
       <Drawer.Screen name="Inicio" component={HomeScreen} />
       <Drawer.Screen name="Usuarios" component={UsuariosScreen} />
+      <Drawer.Screen name="Hospedes" component={HospedesScreen} />
       <Drawer.Screen
         name="CriarUsuario"
         component={CriarUsuarioScreen}
