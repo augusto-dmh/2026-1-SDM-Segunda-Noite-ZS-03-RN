@@ -3,6 +3,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import CustomDrawerContent from './CustomDrawerContent';
 import AnfitrioesScreen from '../screens/anfitrioes/AnfitrioesScreen';
 import CriarAnfitriaoScreen from '../screens/anfitrioes/CriarAnfitriaoScreen';
+import EditarAnfitriaoScreen from '../screens/anfitrioes/EditarAnfitriaoScreen';
 import HomeScreen from '../screens/HomeScreen';
 import CriarHospedeScreen from '../screens/hospedes/CriarHospedeScreen';
 import EditarHospedeScreen from '../screens/hospedes/EditarHospedeScreen';
@@ -32,6 +33,11 @@ export default function DrawerNavigator({ onLogout }: Props) {
         name="CriarAnfitriao"
         component={CriarAnfitriaoScreen}
         options={{ drawerItemStyle: { display: 'none' }, title: 'Criar anfitrião' }}
+      />
+      <Drawer.Screen
+        name="EditarAnfitriao"
+        component={EditarAnfitriaoScreen}
+        options={{ drawerItemStyle: { display: 'none' }, title: 'Editar anfitrião' }}
       />
       <Drawer.Screen
         name="CriarHospede"
