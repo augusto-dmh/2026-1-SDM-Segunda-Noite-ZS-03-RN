@@ -29,6 +29,9 @@ import EditarReservaScreen from '../screens/reservas/EditarReservaScreen';
 import PagamentosScreen from '../screens/pagamentos/PagamentosScreen';
 import CriarPagamentoScreen from '../screens/pagamentos/CriarPagamentoScreen';
 import EditarPagamentoScreen from '../screens/pagamentos/EditarPagamentoScreen';
+import MensagensScreen from '../screens/mensagens/MensagensScreen';
+import CriarMensagemScreen from '../screens/mensagens/CriarMensagemScreen';
+import EditarMensagemScreen from '../screens/mensagens/EditarMensagemScreen';
 
 const Drawer = createDrawerNavigator();
 
@@ -120,6 +123,17 @@ export default function DrawerNavigator({ onLogout }: Props) {
         name="EditarPagamento"
         component={EditarPagamentoScreen}
         options={{ drawerItemStyle: { display: 'none' }, title: 'Editar pagamento' }}
+      />
+      <Drawer.Screen name="Mensagens" component={MensagensScreen} />
+      <Drawer.Screen
+        name="CriarMensagem"
+        component={CriarMensagemScreen}
+        options={{ drawerItemStyle: { display: 'none' }, title: 'Criar mensagem' }}
+      />
+      <Drawer.Screen
+        name="EditarMensagem"
+        component={EditarMensagemScreen}
+        options={{ drawerItemStyle: { display: 'none' }, title: 'Editar mensagem' }}
       />
       <Drawer.Screen name="Comodidades" component={ComodidadesScreen} />
       <Drawer.Screen
