@@ -26,6 +26,9 @@ import EditarHospedagemScreen from '../screens/hospedagens/EditarHospedagemScree
 import ReservasScreen from '../screens/reservas/ReservasScreen';
 import CriarReservaScreen from '../screens/reservas/CriarReservaScreen';
 import EditarReservaScreen from '../screens/reservas/EditarReservaScreen';
+import PagamentosScreen from '../screens/pagamentos/PagamentosScreen';
+import CriarPagamentoScreen from '../screens/pagamentos/CriarPagamentoScreen';
+import EditarPagamentoScreen from '../screens/pagamentos/EditarPagamentoScreen';
 
 const Drawer = createDrawerNavigator();
 
@@ -106,6 +109,17 @@ export default function DrawerNavigator({ onLogout }: Props) {
         name="EditarReserva"
         component={EditarReservaScreen}
         options={{ drawerItemStyle: { display: 'none' }, title: 'Editar reserva' }}
+      />
+      <Drawer.Screen name="Pagamentos" component={PagamentosScreen} />
+      <Drawer.Screen
+        name="CriarPagamento"
+        component={CriarPagamentoScreen}
+        options={{ drawerItemStyle: { display: 'none' }, title: 'Criar pagamento' }}
+      />
+      <Drawer.Screen
+        name="EditarPagamento"
+        component={EditarPagamentoScreen}
+        options={{ drawerItemStyle: { display: 'none' }, title: 'Editar pagamento' }}
       />
       <Drawer.Screen name="Comodidades" component={ComodidadesScreen} />
       <Drawer.Screen
