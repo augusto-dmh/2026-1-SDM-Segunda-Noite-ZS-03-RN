@@ -4,6 +4,7 @@ import CustomDrawerContent from './CustomDrawerContent';
 import AnfitrioesScreen from '../screens/anfitrioes/AnfitrioesScreen';
 import CriarAnfitriaoScreen from '../screens/anfitrioes/CriarAnfitriaoScreen';
 import EditarAnfitriaoScreen from '../screens/anfitrioes/EditarAnfitriaoScreen';
+import EnderecosScreen from '../screens/enderecos/EnderecosScreen';
 import HomeScreen from '../screens/HomeScreen';
 import CriarHospedeScreen from '../screens/hospedes/CriarHospedeScreen';
 import EditarHospedeScreen from '../screens/hospedes/EditarHospedeScreen';
@@ -29,6 +30,7 @@ export default function DrawerNavigator({ onLogout }: Props) {
       <Drawer.Screen name="Usuarios" component={UsuariosScreen} />
       <Drawer.Screen name="Hospedes" component={HospedesScreen} />
       <Drawer.Screen name="Anfitrioes" component={AnfitrioesScreen} />
+      <Drawer.Screen name="Enderecos" component={EnderecosScreen} />
       <Drawer.Screen
         name="CriarAnfitriao"
         component={CriarAnfitriaoScreen}
