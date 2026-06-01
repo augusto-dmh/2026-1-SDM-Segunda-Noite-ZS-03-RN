@@ -46,6 +46,24 @@ export async function entrar(username: string, password: string) {
   return token;
 }
 
+export async function cadastrar(
+  username: string,
+  password: string,
+  email: string,
+) {
+  const resposta = await api.post('/cadastro/', {
+    username,
+    password,
+    email,
+  });
+  const token = resposta.data.token;
+
+  await AsyncStorage.setItem(TOKEN_KEY, token);
+  aplicarToken(token);
+
+  return token;
+}
+
 export async function carregarToken() {
   const token = await AsyncStorage.getItem(TOKEN_KEY);
   aplicarToken(token);

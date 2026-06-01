@@ -9,17 +9,21 @@ import {
   View,
 } from 'react-native';
 
-import { entrar } from '../services/api';
+import { cadastrar, entrar } from '../services/api';
 
 type Props = {
   onLogin: (token: string, tipoLogin: TipoLogin) => void;
 };
 
 export type TipoLogin = 'anfitriao' | 'hospede';
+type ModoFormulario = 'login' | 'cadastro';
 
 export default function LoginScreen({ onLogin }: Props) {
   const [tipoLogin, setTipoLogin] = useState<TipoLogin | null>(null);
+  const [modoFormulario, setModoFormulario] =
+    useState<ModoFormulario>('login');
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [carregando, setCarregando] = useState(false);
 
@@ -44,9 +48,32 @@ export default function LoginScreen({ onLogin }: Props) {
     }
   }
 
+  async function fazerCadastro() {
+    if (!tipoLogin) {
+      return;
+    }
+
+    if (!username || !password) {
+      Alert.alert('Atencao', 'Informe usuario e senha.');
+      return;
+    }
+
+    try {
+      setCarregando(true);
+      const token = await cadastrar(username, password, email);
+      onLogin(token, tipoLogin);
+    } catch {
+      Alert.alert('Erro', 'Nao foi possivel criar o cadastro.');
+    } finally {
+      setCarregando(false);
+    }
+  }
+
   function selecionarTipo(tipo: TipoLogin) {
     setTipoLogin(tipo);
+    setModoFormulario('login');
     setUsername('');
+    setEmail('');
     setPassword('');
   }
 
@@ -76,7 +103,11 @@ export default function LoginScreen({ onLogin }: Props) {
   return (
     <View style={styles.container}>
       <Text style={styles.titulo}>
-        {tipoLogin === 'anfitriao' ? 'Login do anfitriao' : 'Login do hospede'}
+        {modoFormulario === 'cadastro'
+          ? 'Criar cadastro'
+          : tipoLogin === 'anfitriao'
+            ? 'Login do anfitriao'
+            : 'Login do hospede'}
       </Text>
       <TextInput
         style={styles.input}
@@ -85,6 +116,16 @@ export default function LoginScreen({ onLogin }: Props) {
         value={username}
         onChangeText={setUsername}
       />
+      {modoFormulario === 'cadastro' && (
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          autoCapitalize="none"
+          keyboardType="email-address"
+          value={email}
+          onChangeText={setEmail}
+        />
+      )}
       <TextInput
         style={styles.input}
         placeholder="Senha"
@@ -94,14 +135,31 @@ export default function LoginScreen({ onLogin }: Props) {
       />
       <Pressable
         style={styles.botao}
-        onPress={fazerLogin}
+        onPress={modoFormulario === 'cadastro' ? fazerCadastro : fazerLogin}
         disabled={carregando}
       >
         {carregando ? (
           <ActivityIndicator color="#fff" />
         ) : (
-          <Text style={styles.textoBotao}>Entrar</Text>
+          <Text style={styles.textoBotao}>
+            {modoFormulario === 'cadastro' ? 'Cadastrar' : 'Entrar'}
+          </Text>
         )}
+      </Pressable>
+      <Pressable
+        style={styles.botaoSecundario}
+        onPress={() =>
+          setModoFormulario(
+            modoFormulario === 'cadastro' ? 'login' : 'cadastro',
+          )
+        }
+        disabled={carregando}
+      >
+        <Text style={styles.textoVoltar}>
+          {modoFormulario === 'cadastro'
+            ? 'Ja tenho cadastro'
+            : 'Criar cadastro'}
+        </Text>
       </Pressable>
       <Pressable
         style={styles.botaoVoltar}
@@ -158,6 +216,10 @@ const styles = StyleSheet.create({
     padding: 14,
     alignItems: 'center',
     marginTop: 8,
+  },
+  botaoSecundario: {
+    padding: 14,
+    alignItems: 'center',
   },
   textoBotao: {
     color: '#fff',
