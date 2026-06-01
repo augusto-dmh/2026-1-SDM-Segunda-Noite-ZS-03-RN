@@ -9,12 +9,24 @@ const TIPOS = [
 ];
 
 const campos: CampoFormulario[] = [
-  { nome: 'titulo', label: 'Título' },
-  { nome: 'descricao', label: 'Descrição', multiline: true },
+  { nome: 'titulo', label: 'Titulo' },
+  { nome: 'descricao', label: 'Descricao', multiline: true },
   { nome: 'tipo', label: 'Tipo', selecao: TIPOS },
-  { nome: 'endereco', label: 'ID do Endereço', keyboardType: 'numeric', numero: true },
-  { nome: 'comodidades', label: 'IDs das Comodidades (separados por vírgula)', separadoPorVirgula: true },
-  { nome: 'preco_diaria', label: 'Preço da Diária (R$)', keyboardType: 'decimal-pad', numero: true },
+  {
+    nome: 'endereco',
+    label: 'Endereco',
+    selecaoEndpoint: '/enderecos/',
+    selecaoNome: (endereco) =>
+      `${endereco.logradouro}, ${endereco.numero} - ${endereco.cidade}/${endereco.estado}`,
+  },
+  {
+    nome: 'comodidades',
+    label: 'Comodidades',
+    selecaoEndpoint: '/comodidades/',
+    selecaoNome: (comodidade) => comodidade.nome,
+    multipla: true,
+  },
+  { nome: 'preco_diaria', label: 'Preco da Diaria (R$)', keyboardType: 'decimal-pad', numero: true },
   { nome: 'capacidade', label: 'Capacidade', keyboardType: 'numeric', numero: true },
   { nome: 'quartos', label: 'Quartos', keyboardType: 'numeric', numero: true },
   { nome: 'banheiros', label: 'Banheiros', keyboardType: 'numeric', numero: true },

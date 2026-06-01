@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import {
   Alert,
@@ -23,6 +23,9 @@ export type CampoFormulario = {
   valorPadrao?: string | boolean;
   numero?: boolean;
   selecao?: { valor: string; nome: string }[];
+  selecaoEndpoint?: string;
+  selecaoNome?: (item: any) => string;
+  multipla?: boolean;
   separadoPorVirgula?: boolean;
 };
 
@@ -36,7 +39,9 @@ export default function TelaFormulario({ endpoint, campos }: Props) {
   const route = useRoute<any>();
   const item = route.params?.item;
   const valoresIniciais = route.params?.valoresIniciais ?? {};
-  const [valores, setValores] = useState<Record<string, string | boolean>>(
+  const [valores, setValores] = useState<
+    Record<string, string | boolean | string[]>
+  >(
     () =>
       campos.reduce(
         (dados, campo) => {
@@ -48,15 +53,59 @@ export default function TelaFormulario({ endpoint, campos }: Props) {
           if (campo.separadoPorVirgula && Array.isArray(valorInicial)) {
             valorInicial = (valorInicial as number[]).join(',');
           }
+          if (campo.multipla && Array.isArray(valorInicial)) {
+            return {
+              ...dados,
+              [campo.nome]: valorInicial.map((valor) => String(valor)),
+            };
+          }
           return { ...dados, [campo.nome]: String(valorInicial) };
         },
-        {} as Record<string, string | boolean>,
+        {} as Record<string, string | boolean | string[]>,
       ),
   );
+  const [opcoesRemotas, setOpcoesRemotas] = useState<
+    Record<string, { valor: string; nome: string }[]>
+  >({});
   const [salvando, setSalvando] = useState(false);
 
-  function alterar(nome: string, valor: string | boolean) {
+  useEffect(() => {
+    campos
+      .filter((campo) => campo.selecaoEndpoint)
+      .forEach(async (campo) => {
+        try {
+          const resposta = await api.get(campo.selecaoEndpoint as string);
+          setOpcoesRemotas((opcoesAtuais) => ({
+            ...opcoesAtuais,
+            [campo.nome]: resposta.data.map((item: any) => ({
+              valor: String(item.id),
+              nome: campo.selecaoNome ? campo.selecaoNome(item) : String(item.id),
+            })),
+          }));
+        } catch {
+          Alert.alert('Erro', `Nao foi possivel carregar ${campo.label}.`);
+        }
+      });
+  }, [campos]);
+
+  function alterar(nome: string, valor: string | boolean | string[]) {
     setValores({ ...valores, [nome]: valor });
+  }
+
+  function alternarMultipla(nome: string, valor: string) {
+    const valoresAtuais = Array.isArray(valores[nome])
+      ? (valores[nome] as string[])
+      : [];
+
+    if (valoresAtuais.includes(valor)) {
+      alterar(
+        nome,
+        valoresAtuais.filter((item) => item !== valor),
+      );
+      return;
+    }
+
+    alterar(nome, [...valoresAtuais, valor]);
   }
 
   async function salvar() {
@@ -74,6 +123,15 @@ export default function TelaFormulario({ endpoint, campos }: Props) {
           dados[campo.nome] = texto
             ? texto.split(',').map((v: string) => Number(v.trim()))
             : [];
+        }
+        if (campo.selecaoEndpoint) {
+          if (campo.multipla) {
+            dados[campo.nome] = Array.isArray(dados[campo.nome])
+              ? dados[campo.nome].map((valor: string) => Number(valor))
+              : [];
+          } else if (dados[campo.nome] !== '') {
+            dados[campo.nome] = Number(dados[campo.nome]);
+          }
         }
       }
 
@@ -106,32 +164,43 @@ export default function TelaFormulario({ endpoint, campos }: Props) {
           );
         }
 
-        if (campo.selecao) {
+        const opcoes = campo.selecao ?? opcoesRemotas[campo.nome];
+
+        if (opcoes) {
           return (
             <View key={campo.nome} style={{ marginBottom: 12 }}>
               <Text style={styles.label}>{campo.label}</Text>
               <View style={styles.selecaoContainer}>
-                {campo.selecao.map((opcao) => (
-                  <Pressable
-                    key={opcao.valor}
-                    style={[
-                      styles.selecaoBotao,
-                      valores[campo.nome] === opcao.valor &&
-                        styles.selecaoAtivo,
-                    ]}
-                    onPress={() => alterar(campo.nome, opcao.valor)}
-                  >
-                    <Text
+                {opcoes.map((opcao) => {
+                  const selecionado = campo.multipla
+                    ? Array.isArray(valores[campo.nome]) &&
+                      (valores[campo.nome] as string[]).includes(opcao.valor)
+                    : valores[campo.nome] === opcao.valor;
+
+                  return (
+                    <Pressable
+                      key={opcao.valor}
                       style={[
-                        styles.selecaoTexto,
-                        valores[campo.nome] === opcao.valor &&
-                          styles.selecaoTextoAtivo,
+                        styles.selecaoBotao,
+                        selecionado && styles.selecaoAtivo,
                       ]}
+                      onPress={() =>
+                        campo.multipla
+                          ? alternarMultipla(campo.nome, opcao.valor)
+                          : alterar(campo.nome, opcao.valor)
+                      }
                     >
-                      {opcao.nome}
-                    </Text>
-                  </Pressable>
-                ))}
+                      <Text
+                        style={[
+                          styles.selecaoTexto,
+                          selecionado && styles.selecaoTextoAtivo,
+                        ]}
+                      >
+                        {opcao.nome}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
               </View>
             </View>
           );
