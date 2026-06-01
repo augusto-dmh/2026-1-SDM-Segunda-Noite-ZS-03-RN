@@ -28,6 +28,7 @@ export type CampoFormulario = {
   multipla?: boolean;
   separadoPorVirgula?: boolean;
   oculto?: boolean;
+  somenteLeitura?: boolean;
 };
 
 type Props = {
@@ -69,6 +70,37 @@ export default function TelaFormulario({ endpoint, campos }: Props) {
     Record<string, { valor: string; nome: string }[]>
   >({});
   const [salvando, setSalvando] = useState(false);
+
+  useEffect(() => {
+    const precoDiaria = Number(valoresIniciais.preco_diaria);
+    const checkin = String(valores.data_checkin || '');
+    const checkout = String(valores.data_checkout || '');
+
+    if (!precoDiaria || !checkin || !checkout || !('valor_total' in valores)) {
+      return;
+    }
+
+    const dataCheckin = new Date(`${checkin}T00:00:00`);
+    const dataCheckout = new Date(`${checkout}T00:00:00`);
+    const diferenca = dataCheckout.getTime() - dataCheckin.getTime();
+    const dias = diferenca / (1000 * 60 * 60 * 24);
+
+    if (dias > 0) {
+      const valorCalculado = (dias * precoDiaria).toFixed(2);
+
+      if (valores.valor_total !== valorCalculado) {
+        setValores((valoresAtuais) => ({
+          ...valoresAtuais,
+          valor_total: valorCalculado,
+        }));
+      }
+    }
+  }, [
+    valores.data_checkin,
+    valores.data_checkout,
+    valores.valor_total,
+    valoresIniciais.preco_diaria,
+  ]);
 
   useEffect(() => {
     campos
@@ -216,7 +248,9 @@ export default function TelaFormulario({ endpoint, campos }: Props) {
             key={campo.nome}
             label={campo.label}
             value={String(valores[campo.nome])}
-            onChangeText={(valor) => alterar(campo.nome, valor)}
+            onChangeText={(valor) =>
+              campo.somenteLeitura ? undefined : alterar(campo.nome, valor)
+            }
             keyboardType={campo.keyboardType}
             multiline={campo.multiline}
           />

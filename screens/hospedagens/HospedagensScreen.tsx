@@ -143,8 +143,9 @@ export default function HospedagensScreen({ tipoLogin, hospedeId }: Props) {
       valoresIniciais: {
         hospedagem: hospedagem.id,
         hospede: hospedeId,
+        preco_diaria: hospedagem.preco_diaria,
         quantidade_hospedes: 1,
-        valor_total: hospedagem.preco_diaria,
+        valor_total: '0.00',
         status: 'pendente',
       },
     });

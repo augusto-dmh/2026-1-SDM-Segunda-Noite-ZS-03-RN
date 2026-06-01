@@ -15,8 +15,8 @@ function criarCampos(ocultarHospedagemEHospede: boolean): CampoFormulario[] {
   { nome: 'data_checkin', label: 'Data de Check-in (AAAA-MM-DD)' },
   { nome: 'data_checkout', label: 'Data de Check-out (AAAA-MM-DD)' },
   { nome: 'quantidade_hospedes', label: 'Quantidade de Hospedes', keyboardType: 'numeric', numero: true },
-  { nome: 'valor_total', label: 'Valor Total (R$)', keyboardType: 'decimal-pad', numero: true },
-  { nome: 'status', label: 'Status', selecao: STATUS, valorPadrao: 'pendente' },
+  { nome: 'valor_total', label: 'Valor Total (R$)', keyboardType: 'decimal-pad', numero: true, somenteLeitura: ocultarHospedagemEHospede },
+  { nome: 'status', label: 'Status', selecao: STATUS, valorPadrao: 'pendente', oculto: ocultarHospedagemEHospede },
   ];
 }
 
