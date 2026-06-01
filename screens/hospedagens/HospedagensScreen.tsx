@@ -15,6 +15,7 @@ import { TipoLogin } from '../LoginScreen';
 
 type Props = {
   tipoLogin: TipoLogin;
+  hospedeId: number | null;
 };
 
 type Hospedagem = {
@@ -45,7 +46,7 @@ type Comodidade = {
   nome: string;
 };
 
-export default function HospedagensScreen({ tipoLogin }: Props) {
+export default function HospedagensScreen({ tipoLogin, hospedeId }: Props) {
   const navigation = useNavigation<any>();
   const [hospedagens, setHospedagens] = useState<Hospedagem[]>([]);
   const [enderecos, setEnderecos] = useState<Record<number, Endereco>>({});
@@ -133,9 +134,15 @@ export default function HospedagensScreen({ tipoLogin }: Props) {
   }
 
   function reservar(hospedagem: Hospedagem) {
+    if (!hospedeId) {
+      Alert.alert('Erro', 'Nao foi possivel identificar o hospede logado.');
+      return;
+    }
+
     navigation.navigate('CriarReserva', {
       valoresIniciais: {
         hospedagem: hospedagem.id,
+        hospede: hospedeId,
         quantidade_hospedes: 1,
         valor_total: hospedagem.preco_diaria,
         status: 'pendente',

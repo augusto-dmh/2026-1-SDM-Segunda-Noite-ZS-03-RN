@@ -39,9 +39,10 @@ const Drawer = createDrawerNavigator();
 type Props = {
   onLogout: () => void;
   tipoLogin: TipoLogin;
+  hospedeId: number | null;
 };
 
-export default function DrawerNavigator({ onLogout, tipoLogin }: Props) {
+export default function DrawerNavigator({ onLogout, tipoLogin, hospedeId }: Props) {
   const ehAnfitriao = tipoLogin === 'anfitriao';
   const ehHospede = tipoLogin === 'hospede';
 
@@ -107,7 +108,13 @@ export default function DrawerNavigator({ onLogout, tipoLogin }: Props) {
       )}
 
       <Drawer.Screen name="Hospedagens">
-        {(props) => <HospedagensScreen {...props} tipoLogin={tipoLogin} />}
+        {(props) => (
+          <HospedagensScreen
+            {...props}
+            tipoLogin={tipoLogin}
+            hospedeId={hospedeId}
+          />
+        )}
       </Drawer.Screen>
       {ehAnfitriao && (
         <>

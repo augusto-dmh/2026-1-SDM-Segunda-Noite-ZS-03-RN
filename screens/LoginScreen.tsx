@@ -60,7 +60,7 @@ export default function LoginScreen({ onLogin }: Props) {
 
     try {
       setCarregando(true);
-      const token = await cadastrar(username, password, email);
+      const token = await cadastrar(username, password, email, tipoLogin);
       onLogin(token, tipoLogin);
     } catch {
       Alert.alert('Erro', 'Nao foi possivel criar o cadastro.');

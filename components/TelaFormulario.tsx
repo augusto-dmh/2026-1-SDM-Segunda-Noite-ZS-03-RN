@@ -27,6 +27,7 @@ export type CampoFormulario = {
   selecaoNome?: (item: any) => string;
   multipla?: boolean;
   separadoPorVirgula?: boolean;
+  oculto?: boolean;
 };
 
 type Props = {
@@ -152,6 +153,10 @@ export default function TelaFormulario({ endpoint, campos }: Props) {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {campos.map((campo) => {
+        if (campo.oculto) {
+          return null;
+        }
+
         if (campo.booleano) {
           return (
             <View key={campo.nome} style={styles.linha}>

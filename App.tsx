@@ -6,27 +6,44 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import DrawerNavigator from './navigation/DrawerNavigator';
 import LoginScreen, { TipoLogin } from './screens/LoginScreen';
-import { carregarToken, registrarNaoAutorizado, sair } from './services/api';
+import {
+  carregarToken,
+  obterPerfilHospede,
+  registrarNaoAutorizado,
+  sair,
+} from './services/api';
 
 const TIPO_LOGIN_KEY = '@hospedaria:tipo-login';
+const HOSPEDE_ID_KEY = '@hospedaria:hospede-id';
 
 export default function App() {
   const [token, setToken] = useState<string | null>(null);
   const [tipoLogin, setTipoLogin] = useState<TipoLogin | null>(null);
+  const [hospedeId, setHospedeId] = useState<number | null>(null);
   const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
     registrarNaoAutorizado(() => {
       setToken(null);
       setTipoLogin(null);
+      setHospedeId(null);
     });
 
     Promise.all([
       carregarToken(),
       AsyncStorage.getItem(TIPO_LOGIN_KEY) as Promise<TipoLogin | null>,
-    ]).then(([tokenSalvo, tipoLoginSalvo]) => {
+      AsyncStorage.getItem(HOSPEDE_ID_KEY),
+    ]).then(async ([tokenSalvo, tipoLoginSalvo, hospedeIdSalvo]) => {
+      let hospedeIdAtual = hospedeIdSalvo ? Number(hospedeIdSalvo) : null;
+
+      if (tokenSalvo && tipoLoginSalvo === 'hospede' && !hospedeIdAtual) {
+        hospedeIdAtual = await obterPerfilHospede();
+        await AsyncStorage.setItem(HOSPEDE_ID_KEY, String(hospedeIdAtual));
+      }
+
       setToken(tokenSalvo);
       setTipoLogin(tipoLoginSalvo);
+      setHospedeId(hospedeIdAtual);
       setCarregando(false);
     });
 
@@ -34,16 +51,28 @@ export default function App() {
   }, []);
 
   async function fazerLogin(tokenRecebido: string, tipoLoginRecebido: TipoLogin) {
+    let hospedeIdRecebido: number | null = null;
+
+    if (tipoLoginRecebido === 'hospede') {
+      hospedeIdRecebido = await obterPerfilHospede();
+      await AsyncStorage.setItem(HOSPEDE_ID_KEY, String(hospedeIdRecebido));
+    } else {
+      await AsyncStorage.removeItem(HOSPEDE_ID_KEY);
+    }
+
     await AsyncStorage.setItem(TIPO_LOGIN_KEY, tipoLoginRecebido);
     setToken(tokenRecebido);
     setTipoLogin(tipoLoginRecebido);
+    setHospedeId(hospedeIdRecebido);
   }
 
   async function fazerLogout() {
     await sair();
     await AsyncStorage.removeItem(TIPO_LOGIN_KEY);
+    await AsyncStorage.removeItem(HOSPEDE_ID_KEY);
     setToken(null);
     setTipoLogin(null);
+    setHospedeId(null);
   }
 
   if (carregando) {
@@ -60,7 +89,11 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <DrawerNavigator onLogout={fazerLogout} tipoLogin={tipoLogin} />
+      <DrawerNavigator
+        onLogout={fazerLogout}
+        tipoLogin={tipoLogin}
+        hospedeId={hospedeId}
+      />
       <StatusBar style="auto" />
     </NavigationContainer>
   );

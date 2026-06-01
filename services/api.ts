@@ -50,11 +50,13 @@ export async function cadastrar(
   username: string,
   password: string,
   email: string,
+  tipoLogin: string,
 ) {
   const resposta = await api.post('/cadastro/', {
     username,
     password,
     email,
+    tipo_login: tipoLogin,
   });
   const token = resposta.data.token;
 
@@ -62,6 +64,11 @@ export async function cadastrar(
   aplicarToken(token);
 
   return token;
+}
+
+export async function obterPerfilHospede() {
+  const resposta = await api.get('/perfil-hospede/');
+  return resposta.data.id as number;
 }
 
 export async function carregarToken() {
