@@ -106,17 +106,23 @@ export default function DrawerNavigator({ onLogout, tipoLogin }: Props) {
         </>
       )}
 
-      <Drawer.Screen name="Hospedagens" component={HospedagensScreen} />
-      <Drawer.Screen
-        name="CriarHospedagem"
-        component={CriarHospedagemScreen}
-        options={{ drawerItemStyle: { display: 'none' }, title: 'Criar hospedagem' }}
-      />
-      <Drawer.Screen
-        name="EditarHospedagem"
-        component={EditarHospedagemScreen}
-        options={{ drawerItemStyle: { display: 'none' }, title: 'Editar hospedagem' }}
-      />
+      <Drawer.Screen name="Hospedagens">
+        {(props) => <HospedagensScreen {...props} tipoLogin={tipoLogin} />}
+      </Drawer.Screen>
+      {ehAnfitriao && (
+        <>
+          <Drawer.Screen
+            name="CriarHospedagem"
+            component={CriarHospedagemScreen}
+            options={{ drawerItemStyle: { display: 'none' }, title: 'Criar hospedagem' }}
+          />
+          <Drawer.Screen
+            name="EditarHospedagem"
+            component={EditarHospedagemScreen}
+            options={{ drawerItemStyle: { display: 'none' }, title: 'Editar hospedagem' }}
+          />
+        </>
+      )}
 
       <Drawer.Screen name="Reservas" component={ReservasScreen} />
       <Drawer.Screen

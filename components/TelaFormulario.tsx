@@ -35,11 +35,16 @@ export default function TelaFormulario({ endpoint, campos }: Props) {
   const navigation = useNavigation<any>();
   const route = useRoute<any>();
   const item = route.params?.item;
+  const valoresIniciais = route.params?.valoresIniciais ?? {};
   const [valores, setValores] = useState<Record<string, string | boolean>>(
     () =>
       campos.reduce(
         (dados, campo) => {
-          let valorInicial = item?.[campo.nome] ?? campo.valorPadrao ?? '';
+          let valorInicial =
+            item?.[campo.nome] ??
+            valoresIniciais[campo.nome] ??
+            campo.valorPadrao ??
+            '';
           if (campo.separadoPorVirgula && Array.isArray(valorInicial)) {
             valorInicial = (valorInicial as number[]).join(',');
           }
