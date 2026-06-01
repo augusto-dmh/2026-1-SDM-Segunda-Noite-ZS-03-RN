@@ -12,10 +12,10 @@ import {
 import { entrar } from '../services/api';
 
 type Props = {
-  onLogin: (token: string) => void;
+  onLogin: (token: string, tipoLogin: TipoLogin) => void;
 };
 
-type TipoLogin = 'anfitriao' | 'hospede';
+export type TipoLogin = 'anfitriao' | 'hospede';
 
 export default function LoginScreen({ onLogin }: Props) {
   const [tipoLogin, setTipoLogin] = useState<TipoLogin | null>(null);
@@ -24,6 +24,10 @@ export default function LoginScreen({ onLogin }: Props) {
   const [carregando, setCarregando] = useState(false);
 
   async function fazerLogin() {
+    if (!tipoLogin) {
+      return;
+    }
+
     if (!username || !password) {
       Alert.alert('Atencao', 'Informe usuario e senha.');
       return;
@@ -32,7 +36,7 @@ export default function LoginScreen({ onLogin }: Props) {
     try {
       setCarregando(true);
       const token = await entrar(username, password);
-      onLogin(token);
+      onLogin(token, tipoLogin);
     } catch {
       Alert.alert('Erro', 'Usuario ou senha invalidos.');
     } finally {

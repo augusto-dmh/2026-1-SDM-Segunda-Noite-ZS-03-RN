@@ -32,65 +32,80 @@ import EditarPagamentoScreen from '../screens/pagamentos/EditarPagamentoScreen';
 import MensagensScreen from '../screens/mensagens/MensagensScreen';
 import CriarMensagemScreen from '../screens/mensagens/CriarMensagemScreen';
 import EditarMensagemScreen from '../screens/mensagens/EditarMensagemScreen';
+import { TipoLogin } from '../screens/LoginScreen';
 
 const Drawer = createDrawerNavigator();
 
 type Props = {
   onLogout: () => void;
+  tipoLogin: TipoLogin;
 };
 
-export default function DrawerNavigator({ onLogout }: Props) {
+export default function DrawerNavigator({ onLogout, tipoLogin }: Props) {
+  const ehAnfitriao = tipoLogin === 'anfitriao';
+
   return (
     <Drawer.Navigator
       drawerContent={(props) => (
         <CustomDrawerContent {...props} onLogout={onLogout} />
       )}
     >
-      <Drawer.Screen name="Inicio" component={HomeScreen} />
-      <Drawer.Screen name="Usuarios" component={UsuariosScreen} />
-      <Drawer.Screen name="Hospedes" component={HospedesScreen} />
-      <Drawer.Screen name="Anfitrioes" component={AnfitrioesScreen} />
+      {!ehAnfitriao && (
+        <>
+          <Drawer.Screen name="Inicio" component={HomeScreen} />
+          <Drawer.Screen name="Usuarios" component={UsuariosScreen} />
+          <Drawer.Screen name="Hospedes" component={HospedesScreen} />
+          <Drawer.Screen name="Anfitrioes" component={AnfitrioesScreen} />
+        </>
+      )}
+
       <Drawer.Screen name="Enderecos" component={EnderecosScreen} />
       <Drawer.Screen
         name="CriarEndereco"
         component={CriarEnderecoScreen}
-        options={{ drawerItemStyle: { display: 'none' }, title: 'Criar endereço' }}
+        options={{ drawerItemStyle: { display: 'none' }, title: 'Criar endereco' }}
       />
       <Drawer.Screen
         name="EditarEndereco"
         component={EditarEnderecoScreen}
-        options={{ drawerItemStyle: { display: 'none' }, title: 'Editar endereço' }}
+        options={{ drawerItemStyle: { display: 'none' }, title: 'Editar endereco' }}
       />
-      <Drawer.Screen
-        name="CriarAnfitriao"
-        component={CriarAnfitriaoScreen}
-        options={{ drawerItemStyle: { display: 'none' }, title: 'Criar anfitrião' }}
-      />
-      <Drawer.Screen
-        name="EditarAnfitriao"
-        component={EditarAnfitriaoScreen}
-        options={{ drawerItemStyle: { display: 'none' }, title: 'Editar anfitrião' }}
-      />
-      <Drawer.Screen
-        name="CriarHospede"
-        component={CriarHospedeScreen}
-        options={{ drawerItemStyle: { display: 'none' }, title: 'Criar hóspede' }}
-      />
-      <Drawer.Screen
-        name="EditarHospede"
-        component={EditarHospedeScreen}
-        options={{ drawerItemStyle: { display: 'none' }, title: 'Editar hóspede' }}
-      />
-      <Drawer.Screen
-        name="CriarUsuario"
-        component={CriarUsuarioScreen}
-        options={{ drawerItemStyle: { display: 'none' }, title: 'Criar usuário' }}
-      />
-      <Drawer.Screen
-        name="EditarUsuario"
-        component={EditarUsuarioScreen}
-        options={{ drawerItemStyle: { display: 'none' }, title: 'Editar usuário' }}
-      />
+
+      {!ehAnfitriao && (
+        <>
+          <Drawer.Screen
+            name="CriarAnfitriao"
+            component={CriarAnfitriaoScreen}
+            options={{ drawerItemStyle: { display: 'none' }, title: 'Criar anfitriao' }}
+          />
+          <Drawer.Screen
+            name="EditarAnfitriao"
+            component={EditarAnfitriaoScreen}
+            options={{ drawerItemStyle: { display: 'none' }, title: 'Editar anfitriao' }}
+          />
+          <Drawer.Screen
+            name="CriarHospede"
+            component={CriarHospedeScreen}
+            options={{ drawerItemStyle: { display: 'none' }, title: 'Criar hospede' }}
+          />
+          <Drawer.Screen
+            name="EditarHospede"
+            component={EditarHospedeScreen}
+            options={{ drawerItemStyle: { display: 'none' }, title: 'Editar hospede' }}
+          />
+          <Drawer.Screen
+            name="CriarUsuario"
+            component={CriarUsuarioScreen}
+            options={{ drawerItemStyle: { display: 'none' }, title: 'Criar usuario' }}
+          />
+          <Drawer.Screen
+            name="EditarUsuario"
+            component={EditarUsuarioScreen}
+            options={{ drawerItemStyle: { display: 'none' }, title: 'Editar usuario' }}
+          />
+        </>
+      )}
+
       <Drawer.Screen name="Hospedagens" component={HospedagensScreen} />
       <Drawer.Screen
         name="CriarHospedagem"
@@ -102,6 +117,7 @@ export default function DrawerNavigator({ onLogout }: Props) {
         component={EditarHospedagemScreen}
         options={{ drawerItemStyle: { display: 'none' }, title: 'Editar hospedagem' }}
       />
+
       <Drawer.Screen name="Reservas" component={ReservasScreen} />
       <Drawer.Screen
         name="CriarReserva"
@@ -113,17 +129,23 @@ export default function DrawerNavigator({ onLogout }: Props) {
         component={EditarReservaScreen}
         options={{ drawerItemStyle: { display: 'none' }, title: 'Editar reserva' }}
       />
-      <Drawer.Screen name="Pagamentos" component={PagamentosScreen} />
-      <Drawer.Screen
-        name="CriarPagamento"
-        component={CriarPagamentoScreen}
-        options={{ drawerItemStyle: { display: 'none' }, title: 'Criar pagamento' }}
-      />
-      <Drawer.Screen
-        name="EditarPagamento"
-        component={EditarPagamentoScreen}
-        options={{ drawerItemStyle: { display: 'none' }, title: 'Editar pagamento' }}
-      />
+
+      {!ehAnfitriao && (
+        <>
+          <Drawer.Screen name="Pagamentos" component={PagamentosScreen} />
+          <Drawer.Screen
+            name="CriarPagamento"
+            component={CriarPagamentoScreen}
+            options={{ drawerItemStyle: { display: 'none' }, title: 'Criar pagamento' }}
+          />
+          <Drawer.Screen
+            name="EditarPagamento"
+            component={EditarPagamentoScreen}
+            options={{ drawerItemStyle: { display: 'none' }, title: 'Editar pagamento' }}
+          />
+        </>
+      )}
+
       <Drawer.Screen name="Mensagens" component={MensagensScreen} />
       <Drawer.Screen
         name="CriarMensagem"
@@ -135,6 +157,7 @@ export default function DrawerNavigator({ onLogout }: Props) {
         component={EditarMensagemScreen}
         options={{ drawerItemStyle: { display: 'none' }, title: 'Editar mensagem' }}
       />
+
       <Drawer.Screen name="Comodidades" component={ComodidadesScreen} />
       <Drawer.Screen
         name="CriarComodidade"
@@ -146,16 +169,17 @@ export default function DrawerNavigator({ onLogout }: Props) {
         component={EditarComodidadeScreen}
         options={{ drawerItemStyle: { display: 'none' }, title: 'Editar comodidade' }}
       />
+
       <Drawer.Screen name="Avaliacoes" component={AvaliacoesScreen} />
       <Drawer.Screen
         name="CriarAvaliacao"
         component={CriarAvaliacaoScreen}
-        options={{ drawerItemStyle: { display: 'none' }, title: 'Criar avaliação' }}
+        options={{ drawerItemStyle: { display: 'none' }, title: 'Criar avaliacao' }}
       />
       <Drawer.Screen
         name="EditarAvaliacao"
         component={EditarAvaliacaoScreen}
-        options={{ drawerItemStyle: { display: 'none' }, title: 'Editar avaliação' }}
+        options={{ drawerItemStyle: { display: 'none' }, title: 'Editar avaliacao' }}
       />
     </Drawer.Navigator>
   );
