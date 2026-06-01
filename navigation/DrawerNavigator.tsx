@@ -131,7 +131,9 @@ export default function DrawerNavigator({ onLogout, tipoLogin, hospedeId }: Prop
         </>
       )}
 
-      <Drawer.Screen name="Reservas" component={ReservasScreen} />
+      <Drawer.Screen name="Reservas">
+        {(props) => <ReservasScreen {...props} tipoLogin={tipoLogin} />}
+      </Drawer.Screen>
       <Drawer.Screen
         name="CriarReserva"
         component={CriarReservaScreen}
