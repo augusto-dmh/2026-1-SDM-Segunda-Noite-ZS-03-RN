@@ -2,10 +2,27 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
 const TOKEN_KEY = '@hospedaria:token';
+let aoNaoAutorizado: (() => void) | null = null;
 
 export const api = axios.create({
   baseURL: process.env.EXPO_PUBLIC_API_URL || 'http://127.0.0.1:8000',
 });
+
+api.interceptors.response.use(
+  (resposta) => resposta,
+  async (erro) => {
+    if (erro.response?.status === 401) {
+      await sair();
+      aoNaoAutorizado?.();
+    }
+
+    return Promise.reject(erro);
+  },
+);
+
+export function registrarNaoAutorizado(callback: (() => void) | null) {
+  aoNaoAutorizado = callback;
+}
 
 function aplicarToken(token: string | null) {
   if (token) {

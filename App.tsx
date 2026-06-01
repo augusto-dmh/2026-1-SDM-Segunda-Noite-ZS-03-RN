@@ -5,17 +5,20 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import DrawerNavigator from './navigation/DrawerNavigator';
 import LoginScreen from './screens/LoginScreen';
-import { carregarToken, sair } from './services/api';
+import { carregarToken, registrarNaoAutorizado, sair } from './services/api';
 
 export default function App() {
   const [token, setToken] = useState<string | null>(null);
   const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
+    registrarNaoAutorizado(() => setToken(null));
     carregarToken().then((tokenSalvo) => {
       setToken(tokenSalvo);
       setCarregando(false);
     });
+
+    return () => registrarNaoAutorizado(null);
   }, []);
 
   async function fazerLogout() {
