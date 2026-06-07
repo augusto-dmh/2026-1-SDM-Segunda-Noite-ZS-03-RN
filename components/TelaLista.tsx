@@ -22,6 +22,7 @@ type Props = {
   rotaEdicao: string;
   descricao: (item: any) => string;
   permiteExcluir?: boolean;
+  exibeAcoes?: boolean;
 };
 
 export default function TelaLista({
@@ -30,6 +31,7 @@ export default function TelaLista({
   rotaEdicao,
   descricao,
   permiteExcluir = true,
+  exibeAcoes = true,
 }: Props) {
   const navigation = useNavigation<any>();
   const [registros, setRegistros] = useState<Registro[]>([]);
@@ -88,22 +90,24 @@ export default function TelaLista({
         renderItem={({ item }) => (
           <View style={styles.card}>
             <Text style={styles.descricao}>{descricao(item)}</Text>
-            <View style={styles.acoes}>
-              <Pressable
-                style={[styles.botao, styles.editar]}
-                onPress={() => navigation.navigate(rotaEdicao, { item })}
-              >
-                <Text style={styles.textoBotao}>Editar</Text>
-              </Pressable>
-              {permiteExcluir && (
+            {exibeAcoes && (
+              <View style={styles.acoes}>
                 <Pressable
-                  style={[styles.botao, styles.excluir]}
-                  onPress={() => confirmarExclusao(item.id)}
+                  style={[styles.botao, styles.editar]}
+                  onPress={() => navigation.navigate(rotaEdicao, { item })}
                 >
-                  <Text style={styles.textoBotao}>Excluir</Text>
+                  <Text style={styles.textoBotao}>Editar</Text>
                 </Pressable>
-              )}
-            </View>
+                {permiteExcluir && (
+                  <Pressable
+                    style={[styles.botao, styles.excluir]}
+                    onPress={() => confirmarExclusao(item.id)}
+                  >
+                    <Text style={styles.textoBotao}>Excluir</Text>
+                  </Pressable>
+                )}
+              </View>
+            )}
           </View>
         )}
       />

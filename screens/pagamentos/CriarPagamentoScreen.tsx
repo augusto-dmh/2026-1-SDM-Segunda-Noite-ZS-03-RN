@@ -1,5 +1,6 @@
 import TelaFormulario, { CampoFormulario } from '../../components/TelaFormulario';
-import { useRoute } from '@react-navigation/native';
+import { CommonActions, useNavigation, useRoute } from '@react-navigation/native';
+import { api } from '../../services/api';
 
 const METODOS = [
   { valor: 'cartao_credito', nome: 'Cartao de Credito' },
@@ -16,20 +17,41 @@ const STATUS = [
   { valor: 'reembolsado', nome: 'Reembolsado' },
 ];
 
-function criarCampos(ocultarReserva: boolean): CampoFormulario[] {
+function criarCampos(bloquearReserva: boolean): CampoFormulario[] {
   return [
-  { nome: 'reserva', label: 'ID da Reserva', keyboardType: 'numeric', numero: true, oculto: ocultarReserva },
+  { nome: 'reserva', label: 'ID da Reserva', keyboardType: 'numeric', numero: true, somenteLeitura: bloquearReserva },
   { nome: 'valor', label: 'Valor (R$)', keyboardType: 'decimal-pad', numero: true },
   { nome: 'metodo', label: 'Metodo', selecao: METODOS },
-  { nome: 'status', label: 'Status', selecao: STATUS, valorPadrao: 'pendente' },
-  { nome: 'data_pagamento', label: 'Data do Pagamento (AAAA-MM-DD HH:MM)' },
+  { nome: 'status', label: 'Status', selecao: STATUS, valorPadrao: 'pago', oculto: true },
   ];
 }
 
 export default function CriarPagamentoScreen() {
+  const navigation = useNavigation<any>();
   const route = useRoute<any>();
-  const ocultarReserva = Boolean(route.params?.valoresIniciais?.reserva);
-  const campos = criarCampos(ocultarReserva);
+  const bloquearReserva = Boolean(route.params?.valoresIniciais?.reserva);
+  const campos = criarCampos(bloquearReserva);
 
-  return <TelaFormulario endpoint="/pagamentos/pagamentos/" campos={campos} />;
+  return (
+    <TelaFormulario
+      endpoint="/pagamentos/pagamentos/"
+      campos={campos}
+      textoBotao="Pagar"
+      textoSalvando="Pagando..."
+      aoSalvarSucesso={async (_pagamentoCriado, dadosPagamento) => {
+        try {
+          await api.patch(`/reservas/reservas/${dadosPagamento.reserva}/`, {
+            status: 'confirmada',
+          });
+        } finally {
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{ name: 'Reservas' }],
+            }),
+          );
+        }
+      }}
+    />
+  );
 }

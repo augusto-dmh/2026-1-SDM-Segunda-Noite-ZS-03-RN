@@ -1,5 +1,5 @@
 import TelaFormulario, { CampoFormulario } from '../../components/TelaFormulario';
-import { useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const STATUS = [
   { valor: 'pendente', nome: 'Pendente' },
@@ -21,6 +21,7 @@ function criarCampos(ocultarHospedagemEHospede: boolean): CampoFormulario[] {
 }
 
 export default function CriarReservaScreen() {
+  const navigation = useNavigation<any>();
   const route = useRoute<any>();
   const valoresIniciais = route.params?.valoresIniciais;
   const deveOcultarIds = Boolean(
@@ -29,5 +30,22 @@ export default function CriarReservaScreen() {
 
   const campos = criarCampos(deveOcultarIds);
 
-  return <TelaFormulario endpoint="/reservas/reservas/" campos={campos} />;
+  return (
+    <TelaFormulario
+      endpoint="/reservas/reservas/"
+      campos={campos}
+      textoBotao="Ir para pagamento"
+      textoSalvando="Criando reserva..."
+      aoSalvarSucesso={(reservaCriada, dadosReserva) => {
+        navigation.navigate('CriarPagamento', {
+          valoresIniciais: {
+            reserva: reservaCriada.id,
+            hospedagem: reservaCriada.hospedagem ?? dadosReserva.hospedagem,
+            valor: reservaCriada.valor_total ?? dadosReserva.valor_total,
+            status: 'pago',
+          },
+        });
+      }}
+    />
+  );
 }

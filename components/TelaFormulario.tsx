@@ -34,9 +34,21 @@ export type CampoFormulario = {
 type Props = {
   endpoint: string;
   campos: CampoFormulario[];
+  textoBotao?: string;
+  textoSalvando?: string;
+  aoSalvarSucesso?: (
+    itemSalvo: any,
+    dadosEnviados: Record<string, any>,
+  ) => void | Promise<void>;
 };
 
-export default function TelaFormulario({ endpoint, campos }: Props) {
+export default function TelaFormulario({
+  endpoint,
+  campos,
+  textoBotao = 'Salvar',
+  textoSalvando = 'Salvando...',
+  aoSalvarSucesso,
+}: Props) {
   const navigation = useNavigation<any>();
   const route = useRoute<any>();
   const item = route.params?.item;
@@ -168,10 +180,17 @@ export default function TelaFormulario({ endpoint, campos }: Props) {
         }
       }
 
+      let resposta;
+
       if (item) {
-        await api.put(`${endpoint}${item.id}/`, dados);
+        resposta = await api.put(`${endpoint}${item.id}/`, dados);
       } else {
-        await api.post(endpoint, dados);
+        resposta = await api.post(endpoint, dados);
+      }
+
+      if (aoSalvarSucesso) {
+        await aoSalvarSucesso(resposta.data, dados);
+        return;
       }
 
       navigation.goBack();
@@ -258,7 +277,7 @@ export default function TelaFormulario({ endpoint, campos }: Props) {
       })}
       <Pressable style={styles.botao} onPress={salvar} disabled={salvando}>
         <Text style={styles.textoBotao}>
-          {salvando ? 'Salvando...' : 'Salvar'}
+          {salvando ? textoSalvando : textoBotao}
         </Text>
       </Pressable>
     </ScrollView>

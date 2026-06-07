@@ -74,8 +74,9 @@ export default function ReservasScreen({ tipoLogin }: Props) {
     navigation.navigate('CriarPagamento', {
       valoresIniciais: {
         reserva: reserva.id,
+        hospedagem: reserva.hospedagem,
         valor: reserva.valor_total,
-        status: 'pendente',
+        status: 'pago',
       },
     });
   }
