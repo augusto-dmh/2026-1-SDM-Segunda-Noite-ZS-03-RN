@@ -9,13 +9,12 @@ import {
   View,
 } from 'react-native';
 
-import { cadastrar, entrar } from '../services/api';
+import { cadastrar, entrar, SessaoLogin, TipoLogin } from '../services/api';
 
 type Props = {
-  onLogin: (token: string, tipoLogin: TipoLogin) => void;
+  onLogin: (sessao: SessaoLogin) => void;
 };
 
-export type TipoLogin = 'anfitriao' | 'hospede';
 type ModoFormulario = 'login' | 'cadastro';
 
 export default function LoginScreen({ onLogin }: Props) {
@@ -28,10 +27,6 @@ export default function LoginScreen({ onLogin }: Props) {
   const [carregando, setCarregando] = useState(false);
 
   async function fazerLogin() {
-    if (!tipoLogin) {
-      return;
-    }
-
     if (!username || !password) {
       Alert.alert('Atencao', 'Informe usuario e senha.');
       return;
@@ -39,8 +34,8 @@ export default function LoginScreen({ onLogin }: Props) {
 
     try {
       setCarregando(true);
-      const token = await entrar(username, password);
-      onLogin(token, tipoLogin);
+      const sessao = await entrar(username, password);
+      onLogin(sessao);
     } catch {
       Alert.alert('Erro', 'Usuario ou senha invalidos.');
     } finally {
@@ -50,18 +45,19 @@ export default function LoginScreen({ onLogin }: Props) {
 
   async function fazerCadastro() {
     if (!tipoLogin) {
+      Alert.alert('Atencao', 'Escolha o tipo de cadastro.');
       return;
     }
 
-    if (!username || !password) {
-      Alert.alert('Atencao', 'Informe usuario e senha.');
+    if (!username || !email || !password) {
+      Alert.alert('Atencao', 'Informe usuario, email e senha.');
       return;
     }
 
     try {
       setCarregando(true);
-      const token = await cadastrar(username, password, email, tipoLogin);
-      onLogin(token, tipoLogin);
+      const sessao = await cadastrar(username, password, email, tipoLogin);
+      onLogin(sessao);
     } catch {
       Alert.alert('Erro', 'Nao foi possivel criar o cadastro.');
     } finally {
@@ -71,44 +67,39 @@ export default function LoginScreen({ onLogin }: Props) {
 
   function selecionarTipo(tipo: TipoLogin) {
     setTipoLogin(tipo);
-    setModoFormulario('login');
-    setUsername('');
-    setEmail('');
-    setPassword('');
-  }
-
-  if (!tipoLogin) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.titulo}>Hospedaria</Text>
-        <Text style={styles.subtitulo}>Como voce deseja entrar?</Text>
-
-        <Pressable
-          style={styles.botaoOpcao}
-          onPress={() => selecionarTipo('anfitriao')}
-        >
-          <Text style={styles.textoBotao}>Logar como anfitriao</Text>
-        </Pressable>
-
-        <Pressable
-          style={styles.botaoOpcao}
-          onPress={() => selecionarTipo('hospede')}
-        >
-          <Text style={styles.textoBotao}>Logar como hospede</Text>
-        </Pressable>
-      </View>
-    );
   }
 
   return (
     <View style={styles.container}>
       <Text style={styles.titulo}>
-        {modoFormulario === 'cadastro'
-          ? 'Criar cadastro'
-          : tipoLogin === 'anfitriao'
-            ? 'Login do anfitriao'
-            : 'Login do hospede'}
+        {modoFormulario === 'cadastro' ? 'Criar cadastro' : 'Login'}
       </Text>
+      {modoFormulario === 'cadastro' && (
+        <>
+          <Text style={styles.subtitulo}>Escolha o tipo de cadastro</Text>
+          <View style={styles.linhaOpcoes}>
+            <Pressable
+              style={[
+                styles.botaoOpcao,
+                tipoLogin === 'anfitriao' && styles.botaoOpcaoAtivo,
+              ]}
+              onPress={() => selecionarTipo('anfitriao')}
+            >
+              <Text style={styles.textoBotao}>Anfitriao</Text>
+            </Pressable>
+
+            <Pressable
+              style={[
+                styles.botaoOpcao,
+                tipoLogin === 'hospede' && styles.botaoOpcaoAtivo,
+              ]}
+              onPress={() => selecionarTipo('hospede')}
+            >
+              <Text style={styles.textoBotao}>Hospede</Text>
+            </Pressable>
+          </View>
+        </>
+      )}
       <TextInput
         style={styles.input}
         placeholder="Usuario"
@@ -148,11 +139,12 @@ export default function LoginScreen({ onLogin }: Props) {
       </Pressable>
       <Pressable
         style={styles.botaoSecundario}
-        onPress={() =>
+        onPress={() => {
           setModoFormulario(
             modoFormulario === 'cadastro' ? 'login' : 'cadastro',
-          )
-        }
+          );
+          setTipoLogin(null);
+        }}
         disabled={carregando}
       >
         <Text style={styles.textoVoltar}>
@@ -160,13 +152,6 @@ export default function LoginScreen({ onLogin }: Props) {
             ? 'Ja tenho cadastro'
             : 'Criar cadastro'}
         </Text>
-      </Pressable>
-      <Pressable
-        style={styles.botaoVoltar}
-        onPress={() => setTipoLogin(null)}
-        disabled={carregando}
-      >
-        <Text style={styles.textoVoltar}>Voltar</Text>
       </Pressable>
     </View>
   );
@@ -210,16 +195,19 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     padding: 16,
     alignItems: 'center',
-    marginBottom: 12,
+    flex: 1,
   },
-  botaoVoltar: {
-    padding: 14,
-    alignItems: 'center',
-    marginTop: 8,
+  botaoOpcaoAtivo: {
+    backgroundColor: '#1d4ed8',
   },
   botaoSecundario: {
     padding: 14,
     alignItems: 'center',
+  },
+  linhaOpcoes: {
+    flexDirection: 'row',
+    gap: 10,
+    marginBottom: 12,
   },
   textoBotao: {
     color: '#fff',

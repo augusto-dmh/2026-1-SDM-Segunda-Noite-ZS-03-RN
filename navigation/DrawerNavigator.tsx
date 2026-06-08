@@ -32,7 +32,7 @@ import EditarPagamentoScreen from '../screens/pagamentos/EditarPagamentoScreen';
 import MensagensScreen from '../screens/mensagens/MensagensScreen';
 import CriarMensagemScreen from '../screens/mensagens/CriarMensagemScreen';
 import EditarMensagemScreen from '../screens/mensagens/EditarMensagemScreen';
-import { TipoLogin } from '../screens/LoginScreen';
+import { TipoLogin } from '../services/api';
 
 const Drawer = createDrawerNavigator();
 
@@ -40,6 +40,7 @@ type Props = {
   onLogout: () => void;
   tipoLogin: TipoLogin;
   hospedeId: number | null;
+  anfitriaoId: number | null;
 };
 
 export default function DrawerNavigator({ onLogout, tipoLogin, hospedeId }: Props) {
@@ -173,6 +174,24 @@ export default function DrawerNavigator({ onLogout, tipoLogin, hospedeId }: Prop
         options={{ drawerItemStyle: { display: 'none' }, title: 'Editar mensagem' }}
       />
 
+      <Drawer.Screen name="Avaliacoes">
+        {(props) => <AvaliacoesScreen {...props} tipoLogin={tipoLogin} />}
+      </Drawer.Screen>
+      {ehHospede && (
+        <>
+          <Drawer.Screen
+            name="CriarAvaliacao"
+            component={CriarAvaliacaoScreen}
+            options={{ drawerItemStyle: { display: 'none' }, title: 'Criar avaliacao' }}
+          />
+          <Drawer.Screen
+            name="EditarAvaliacao"
+            component={EditarAvaliacaoScreen}
+            options={{ drawerItemStyle: { display: 'none' }, title: 'Editar avaliacao' }}
+          />
+        </>
+      )}
+
       {ehAnfitriao && (
         <>
           <Drawer.Screen name="Comodidades" component={ComodidadesScreen} />
@@ -185,18 +204,6 @@ export default function DrawerNavigator({ onLogout, tipoLogin, hospedeId }: Prop
             name="EditarComodidade"
             component={EditarComodidadeScreen}
             options={{ drawerItemStyle: { display: 'none' }, title: 'Editar comodidade' }}
-          />
-
-          <Drawer.Screen name="Avaliacoes" component={AvaliacoesScreen} />
-          <Drawer.Screen
-            name="CriarAvaliacao"
-            component={CriarAvaliacaoScreen}
-            options={{ drawerItemStyle: { display: 'none' }, title: 'Criar avaliacao' }}
-          />
-          <Drawer.Screen
-            name="EditarAvaliacao"
-            component={EditarAvaliacaoScreen}
-            options={{ drawerItemStyle: { display: 'none' }, title: 'Editar avaliacao' }}
           />
         </>
       )}

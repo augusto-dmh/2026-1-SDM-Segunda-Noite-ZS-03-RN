@@ -5,21 +5,25 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import DrawerNavigator from './navigation/DrawerNavigator';
-import LoginScreen, { TipoLogin } from './screens/LoginScreen';
+import LoginScreen from './screens/LoginScreen';
 import {
   carregarToken,
-  obterPerfilHospede,
+  obterPerfilLogin,
   registrarNaoAutorizado,
   sair,
+  SessaoLogin,
+  TipoLogin,
 } from './services/api';
 
 const TIPO_LOGIN_KEY = '@hospedaria:tipo-login';
 const HOSPEDE_ID_KEY = '@hospedaria:hospede-id';
+const ANFITRIAO_ID_KEY = '@hospedaria:anfitriao-id';
 
 export default function App() {
   const [token, setToken] = useState<string | null>(null);
   const [tipoLogin, setTipoLogin] = useState<TipoLogin | null>(null);
   const [hospedeId, setHospedeId] = useState<number | null>(null);
+  const [anfitriaoId, setAnfitriaoId] = useState<number | null>(null);
   const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
@@ -27,52 +31,68 @@ export default function App() {
       setToken(null);
       setTipoLogin(null);
       setHospedeId(null);
+      setAnfitriaoId(null);
     });
 
-    Promise.all([
-      carregarToken(),
-      AsyncStorage.getItem(TIPO_LOGIN_KEY) as Promise<TipoLogin | null>,
-      AsyncStorage.getItem(HOSPEDE_ID_KEY),
-    ]).then(async ([tokenSalvo, tipoLoginSalvo, hospedeIdSalvo]) => {
-      let hospedeIdAtual = hospedeIdSalvo ? Number(hospedeIdSalvo) : null;
+    async function carregarSessao() {
+      const tokenSalvo = await carregarToken();
 
-      if (tokenSalvo && tipoLoginSalvo === 'hospede' && !hospedeIdAtual) {
-        hospedeIdAtual = await obterPerfilHospede();
-        await AsyncStorage.setItem(HOSPEDE_ID_KEY, String(hospedeIdAtual));
+      if (!tokenSalvo) {
+        setCarregando(false);
+        return;
       }
 
-      setToken(tokenSalvo);
-      setTipoLogin(tipoLoginSalvo);
-      setHospedeId(hospedeIdAtual);
-      setCarregando(false);
-    });
+      try {
+        const perfil = await obterPerfilLogin();
+
+        await aplicarSessao({
+          token: tokenSalvo,
+          tipoLogin: perfil.tipo_login,
+          hospedeId: perfil.hospede_id,
+          anfitriaoId: perfil.anfitriao_id,
+        });
+      } catch {
+        await fazerLogout();
+      } finally {
+        setCarregando(false);
+      }
+    }
+
+    carregarSessao();
 
     return () => registrarNaoAutorizado(null);
   }, []);
 
-  async function fazerLogin(tokenRecebido: string, tipoLoginRecebido: TipoLogin) {
-    let hospedeIdRecebido: number | null = null;
+  async function aplicarSessao(sessao: SessaoLogin) {
+    await AsyncStorage.setItem(TIPO_LOGIN_KEY, sessao.tipoLogin);
 
-    if (tipoLoginRecebido === 'hospede') {
-      hospedeIdRecebido = await obterPerfilHospede();
-      await AsyncStorage.setItem(HOSPEDE_ID_KEY, String(hospedeIdRecebido));
+    if (sessao.hospedeId) {
+      await AsyncStorage.setItem(HOSPEDE_ID_KEY, String(sessao.hospedeId));
     } else {
       await AsyncStorage.removeItem(HOSPEDE_ID_KEY);
     }
 
-    await AsyncStorage.setItem(TIPO_LOGIN_KEY, tipoLoginRecebido);
-    setToken(tokenRecebido);
-    setTipoLogin(tipoLoginRecebido);
-    setHospedeId(hospedeIdRecebido);
+    if (sessao.anfitriaoId) {
+      await AsyncStorage.setItem(ANFITRIAO_ID_KEY, String(sessao.anfitriaoId));
+    } else {
+      await AsyncStorage.removeItem(ANFITRIAO_ID_KEY);
+    }
+
+    setToken(sessao.token);
+    setTipoLogin(sessao.tipoLogin);
+    setHospedeId(sessao.hospedeId);
+    setAnfitriaoId(sessao.anfitriaoId);
   }
 
   async function fazerLogout() {
     await sair();
     await AsyncStorage.removeItem(TIPO_LOGIN_KEY);
     await AsyncStorage.removeItem(HOSPEDE_ID_KEY);
+    await AsyncStorage.removeItem(ANFITRIAO_ID_KEY);
     setToken(null);
     setTipoLogin(null);
     setHospedeId(null);
+    setAnfitriaoId(null);
   }
 
   if (carregando) {
@@ -84,7 +104,7 @@ export default function App() {
   }
 
   if (!token || !tipoLogin) {
-    return <LoginScreen onLogin={fazerLogin} />;
+    return <LoginScreen onLogin={aplicarSessao} />;
   }
 
   return (
@@ -93,6 +113,7 @@ export default function App() {
         onLogout={fazerLogout}
         tipoLogin={tipoLogin}
         hospedeId={hospedeId}
+        anfitriaoId={anfitriaoId}
       />
       <StatusBar style="auto" />
     </NavigationContainer>

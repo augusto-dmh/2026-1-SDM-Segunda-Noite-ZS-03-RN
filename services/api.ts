@@ -4,6 +4,21 @@ import axios from 'axios';
 const TOKEN_KEY = '@hospedaria:token';
 let aoNaoAutorizado: (() => void) | null = null;
 
+export type TipoLogin = 'anfitriao' | 'hospede';
+
+type PerfilLogin = {
+  tipo_login: TipoLogin;
+  hospede_id: number | null;
+  anfitriao_id: number | null;
+};
+
+export type SessaoLogin = {
+  token: string;
+  tipoLogin: TipoLogin;
+  hospedeId: number | null;
+  anfitriaoId: number | null;
+};
+
 export const api = axios.create({
   baseURL: process.env.EXPO_PUBLIC_API_URL || 'http://127.0.0.1:8000',
 });
@@ -33,6 +48,21 @@ function aplicarToken(token: string | null) {
   delete api.defaults.headers.common.Authorization;
 }
 
+function criarSessao(token: string, perfil: PerfilLogin): SessaoLogin {
+  return {
+    token,
+    tipoLogin: perfil.tipo_login,
+    hospedeId: perfil.hospede_id,
+    anfitriaoId: perfil.anfitriao_id,
+  };
+}
+
+export async function obterPerfilLogin() {
+  const resposta = await api.get('/perfil-login/');
+
+  return resposta.data as PerfilLogin;
+}
+
 export async function entrar(username: string, password: string) {
   const resposta = await api.post('/token-autenticacao/', {
     username,
@@ -43,7 +73,9 @@ export async function entrar(username: string, password: string) {
   await AsyncStorage.setItem(TOKEN_KEY, token);
   aplicarToken(token);
 
-  return token;
+  const perfil = await obterPerfilLogin();
+
+  return criarSessao(token, perfil);
 }
 
 export async function cadastrar(
@@ -63,7 +95,7 @@ export async function cadastrar(
   await AsyncStorage.setItem(TOKEN_KEY, token);
   aplicarToken(token);
 
-  return token;
+  return criarSessao(token, resposta.data as PerfilLogin);
 }
 
 export async function obterPerfilHospede() {

@@ -23,6 +23,7 @@ type Props = {
   descricao: (item: any) => string;
   permiteExcluir?: boolean;
   exibeAcoes?: boolean;
+  exibeCriacao?: boolean;
 };
 
 export default function TelaLista({
@@ -32,6 +33,7 @@ export default function TelaLista({
   descricao,
   permiteExcluir = true,
   exibeAcoes = true,
+  exibeCriacao = true,
 }: Props) {
   const navigation = useNavigation<any>();
   const [registros, setRegistros] = useState<Registro[]>([]);
@@ -111,12 +113,14 @@ export default function TelaLista({
           </View>
         )}
       />
-      <Pressable
-        style={styles.adicionar}
-        onPress={() => navigation.navigate(rotaCadastro)}
-      >
-        <Text style={styles.textoAdicionar}>+</Text>
-      </Pressable>
+      {exibeCriacao && (
+        <Pressable
+          style={styles.adicionar}
+          onPress={() => navigation.navigate(rotaCadastro)}
+        >
+          <Text style={styles.textoAdicionar}>+</Text>
+        </Pressable>
+      )}
     </View>
   );
 }
