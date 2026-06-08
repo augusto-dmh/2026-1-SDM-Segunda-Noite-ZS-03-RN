@@ -9,12 +9,12 @@ const TIPOS = [
 ];
 
 const campos: CampoFormulario[] = [
-  { nome: 'titulo', label: 'Titulo' },
-  { nome: 'descricao', label: 'Descricao', multiline: true },
+  { nome: 'titulo', label: 'Título' },
+  { nome: 'descricao', label: 'Descrição', multiline: true },
   { nome: 'tipo', label: 'Tipo', selecao: TIPOS },
   {
     nome: 'endereco',
-    label: 'Endereco',
+    label: 'Endereço',
     selecaoEndpoint: '/enderecos/',
     selecaoNome: (endereco) =>
       `${endereco.logradouro}, ${endereco.numero} - ${endereco.cidade}/${endereco.estado}`,
@@ -26,7 +26,7 @@ const campos: CampoFormulario[] = [
     selecaoNome: (comodidade) => comodidade.nome,
     multipla: true,
   },
-  { nome: 'preco_diaria', label: 'Preco da Diaria (R$)', keyboardType: 'decimal-pad', numero: true },
+  { nome: 'preco_diaria', label: 'Preço da diária (R$)', keyboardType: 'decimal-pad', numero: true },
   { nome: 'capacidade', label: 'Capacidade', keyboardType: 'numeric', numero: true },
   { nome: 'quartos', label: 'Quartos', keyboardType: 'numeric', numero: true },
   { nome: 'banheiros', label: 'Banheiros', keyboardType: 'numeric', numero: true },

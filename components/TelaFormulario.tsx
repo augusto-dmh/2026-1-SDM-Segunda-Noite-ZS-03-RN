@@ -128,7 +128,7 @@ export default function TelaFormulario({
             })),
           }));
         } catch {
-          Alert.alert('Erro', `Nao foi possivel carregar ${campo.label}.`);
+          Alert.alert('Erro', `Não foi possível carregar ${campo.label}.`);
         }
       });
   }, [campos]);

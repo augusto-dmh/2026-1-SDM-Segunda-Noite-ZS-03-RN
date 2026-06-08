@@ -3,8 +3,8 @@ import { CommonActions, useNavigation, useRoute } from '@react-navigation/native
 import { api } from '../../services/api';
 
 const METODOS = [
-  { valor: 'cartao_credito', nome: 'Cartao de Credito' },
-  { valor: 'cartao_debito', nome: 'Cartao de Debito' },
+  { valor: 'cartao_credito', nome: 'Cartão de crédito' },
+  { valor: 'cartao_debito', nome: 'Cartão de débito' },
   { valor: 'pix', nome: 'PIX' },
   { valor: 'boleto', nome: 'Boleto' },
   { valor: 'dinheiro', nome: 'Dinheiro' },
@@ -21,7 +21,7 @@ function criarCampos(bloquearReserva: boolean): CampoFormulario[] {
   return [
   { nome: 'reserva', label: 'ID da Reserva', keyboardType: 'numeric', numero: true, somenteLeitura: bloquearReserva },
   { nome: 'valor', label: 'Valor (R$)', keyboardType: 'decimal-pad', numero: true },
-  { nome: 'metodo', label: 'Metodo', selecao: METODOS },
+  { nome: 'metodo', label: 'Método', selecao: METODOS },
   { nome: 'status', label: 'Status', selecao: STATUS, valorPadrao: 'pago', oculto: true },
   ];
 }

@@ -8,7 +8,7 @@ export default function PagamentosScreen() {
       rotaEdicao="EditarPagamento"
       exibeAcoes={false}
       descricao={(pagamento) =>
-        `Pagamento ${pagamento.id}\nReserva: ${pagamento.reserva} | Valor: R$ ${pagamento.valor}\nMetodo: ${pagamento.metodo} | Status: ${pagamento.status}\nData do pagamento: ${pagamento.data_pagamento || 'Nao informada'}`
+        `Pagamento ${pagamento.id}\nReserva: ${pagamento.reserva} | Valor: R$ ${pagamento.valor}\nMétodo: ${pagamento.metodo} | Status: ${pagamento.status}\nData do pagamento: ${pagamento.data_pagamento || 'Não informada'}`
       }
     />
   );
