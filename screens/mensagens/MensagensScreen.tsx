@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import {
   ActivityIndicator,
@@ -11,6 +12,7 @@ import {
 } from 'react-native';
 
 import { api } from '../../services/api';
+import { DrawerParamList } from '../../navigation/DrawerNavigator';
 
 type Mensagem = {
   id: number;
@@ -23,8 +25,10 @@ type Mensagem = {
   lida: boolean;
 };
 
+type Navigation = DrawerNavigationProp<DrawerParamList>;
+
 export default function MensagensScreen() {
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<Navigation>();
   const [mensagens, setMensagens] = useState<Mensagem[]>([]);
   const [carregando, setCarregando] = useState(true);
 
