@@ -34,7 +34,7 @@ export default function MensagensScreen() {
       const resposta = await api.get('/mensagens/mensagens/');
       setMensagens(resposta.data);
     } catch {
-      Alert.alert('Erro', 'Nao foi possivel carregar as mensagens.');
+      Alert.alert('Erro', 'Não foi possível carregar as mensagens.');
     } finally {
       setCarregando(false);
     }
@@ -57,7 +57,7 @@ export default function MensagensScreen() {
             await api.delete(`/mensagens/mensagens/${id}/`);
             carregar();
           } catch {
-            Alert.alert('Erro', 'Nao foi possivel excluir a mensagem.');
+            Alert.alert('Erro', 'Não foi possível excluir a mensagem.');
           }
         },
       },
@@ -97,12 +97,12 @@ export default function MensagensScreen() {
               Hospedagem: {item.hospedagem} | De: {item.nome}
             </Text>
             <Text style={styles.descricao}>
-              Email: {item.email} | Telefone: {item.telefone || 'Nao informado'}
+              E-mail: {item.email} | Telefone: {item.telefone || 'Não informado'}
             </Text>
             <Text style={styles.descricao}>Assunto: {item.assunto}</Text>
             <Text style={styles.descricao}>{item.mensagem}</Text>
             <Text style={styles.descricao}>
-              Lida: {item.lida ? 'Sim' : 'Nao'}
+              Lida: {item.lida ? 'Sim' : 'Não'}
             </Text>
 
             <View style={styles.acoes}>

@@ -83,7 +83,7 @@ export default function HospedagensScreen({ tipoLogin, hospedeId }: Props) {
         ),
       );
     } catch {
-      Alert.alert('Erro', 'Nao foi possivel carregar as hospedagens.');
+      Alert.alert('Erro', 'Não foi possível carregar as hospedagens.');
     } finally {
       setCarregando(false);
     }
@@ -99,7 +99,7 @@ export default function HospedagensScreen({ tipoLogin, hospedeId }: Props) {
     const endereco = enderecos[id];
 
     if (!endereco) {
-      return `Endereco: ${id}`;
+      return `Endereço: ${id}`;
     }
 
     return `${endereco.logradouro}, ${endereco.numero} - ${endereco.bairro}, ${endereco.cidade}/${endereco.estado} - CEP ${endereco.cep}`;
@@ -125,7 +125,7 @@ export default function HospedagensScreen({ tipoLogin, hospedeId }: Props) {
             await api.delete(`/hospedagens/${id}/`);
             carregar();
           } catch {
-            Alert.alert('Erro', 'Nao foi possivel excluir a hospedagem.');
+            Alert.alert('Erro', 'Não foi possível excluir a hospedagem.');
           }
         },
       },
@@ -134,7 +134,7 @@ export default function HospedagensScreen({ tipoLogin, hospedeId }: Props) {
 
   function reservar(hospedagem: Hospedagem) {
     if (!hospedeId) {
-      Alert.alert('Erro', 'Nao foi possivel identificar o hospede logado.');
+      Alert.alert('Erro', 'Não foi possível identificar o hóspede logado.');
       return;
     }
 
@@ -169,14 +169,14 @@ export default function HospedagensScreen({ tipoLogin, hospedeId }: Props) {
             <Text style={styles.titulo}>{item.titulo}</Text>
             <Text style={styles.descricao}>{item.descricao}</Text>
             <Text style={styles.descricao}>
-              Tipo: {item.tipo} | Diaria: R$ {item.preco_diaria}
+              Tipo: {item.tipo} | Diária: R$ {item.preco_diaria}
             </Text>
             <Text style={styles.descricao}>
               Capacidade: {item.capacidade} | Quartos: {item.quartos} |
               Banheiros: {item.banheiros}
             </Text>
             <Text style={styles.descricao}>
-              Endereco: {descreverEndereco(item.endereco)}
+              Endereço: {descreverEndereco(item.endereco)}
             </Text>
             <Text style={styles.descricao}>
               Comodidades: {descreverComodidades(item.comodidades)}
