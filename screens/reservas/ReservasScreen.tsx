@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import {
   ActivityIndicator,
@@ -11,6 +12,7 @@ import {
 } from 'react-native';
 
 import { api, TipoLogin } from '../../services/api';
+import { DrawerParamList } from '../../navigation/DrawerNavigator';
 
 type Props = {
   tipoLogin: TipoLogin;
@@ -27,8 +29,10 @@ type Reserva = {
   status: string;
 };
 
+type Navigation = DrawerNavigationProp<DrawerParamList>;
+
 export default function ReservasScreen({ tipoLogin }: Props) {
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<Navigation>();
   const [reservas, setReservas] = useState<Reserva[]>([]);
   const [carregando, setCarregando] = useState(true);
   const ehHospede = tipoLogin === 'hospede';
