@@ -12,25 +12,34 @@ type Props = DrawerContentComponentProps & {
 
 export default function CustomDrawerContent(props: Props) {
   return (
-    <DrawerContentScrollView {...props}>
-      <View style={styles.cabecalho}>
-        <Text style={styles.titulo}>Hospedaria</Text>
+    <DrawerContentScrollView {...props} contentContainerStyle={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.nome}>Hospedaria</Text>
       </View>
-      <DrawerItemList {...props} />
+      <View style={styles.itens}>
+        <DrawerItemList {...props} />
+      </View>
       <DrawerItem label="Sair" onPress={props.onLogout} />
     </DrawerContentScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  cabecalho: {
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-    marginBottom: 8,
+  container: {
+    flex: 1,
   },
-  titulo: {
-    fontSize: 22,
-    fontWeight: 'bold',
+  header: {
+    padding: 20,
+    backgroundColor: '#4B7BE5',
+    alignItems: 'center',
+  },
+  nome: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  itens: {
+    flex: 1,
+    paddingTop: 10,
   },
 });
