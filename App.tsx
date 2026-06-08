@@ -20,6 +20,34 @@ const HOSPEDE_ID_KEY = '@hospedaria:hospede-id';
 const ANFITRIAO_ID_KEY = '@hospedaria:anfitriao-id';
 
 export default function App() {
+  const sessao = useSessaoLogin();
+
+  if (sessao.carregando) {
+    return (
+      <View style={styles.carregando}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  if (!sessao.token || !sessao.tipoLogin) {
+    return <LoginScreen onLogin={sessao.aplicarSessao} />;
+  }
+
+  return (
+    <NavigationContainer>
+      <DrawerNavigator
+        onLogout={sessao.fazerLogout}
+        tipoLogin={sessao.tipoLogin}
+        hospedeId={sessao.hospedeId}
+        anfitriaoId={sessao.anfitriaoId}
+      />
+      <StatusBar style="auto" />
+    </NavigationContainer>
+  );
+}
+
+function useSessaoLogin() {
   const [token, setToken] = useState<string | null>(null);
   const [tipoLogin, setTipoLogin] = useState<TipoLogin | null>(null);
   const [hospedeId, setHospedeId] = useState<number | null>(null);
@@ -95,29 +123,15 @@ export default function App() {
     setAnfitriaoId(null);
   }
 
-  if (carregando) {
-    return (
-      <View style={styles.carregando}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
-
-  if (!token || !tipoLogin) {
-    return <LoginScreen onLogin={aplicarSessao} />;
-  }
-
-  return (
-    <NavigationContainer>
-      <DrawerNavigator
-        onLogout={fazerLogout}
-        tipoLogin={tipoLogin}
-        hospedeId={hospedeId}
-        anfitriaoId={anfitriaoId}
-      />
-      <StatusBar style="auto" />
-    </NavigationContainer>
-  );
+  return {
+    token,
+    tipoLogin,
+    hospedeId,
+    anfitriaoId,
+    carregando,
+    aplicarSessao,
+    fazerLogout,
+  };
 }
 
 const styles = StyleSheet.create({
