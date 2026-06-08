@@ -31,6 +31,13 @@ const METODOS = [
 type Navigation = DrawerNavigationProp<DrawerParamList>;
 type Route = RouteProp<DrawerParamList, 'CriarPagamento'>;
 
+type DadosPagamento = {
+  reserva: number;
+  valor: number;
+  metodo: string;
+  status: string;
+};
+
 export default function CriarPagamentoScreen() {
   const navigation = useNavigation<Navigation>();
   const route = useRoute<Route>();
@@ -44,26 +51,42 @@ export default function CriarPagamentoScreen() {
   async function salvar() {
     try {
       setSalvando(true);
-      await api.post('/pagamentos/pagamentos/', {
-        reserva: Number(reserva),
-        valor: Number(valor),
-        metodo,
-        status: 'pago',
-      });
-      await api.patch(`/reservas/reservas/${reserva}/`, {
-        status: 'confirmada',
-      });
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: 'Reservas' }],
-        }),
-      );
+      await registrarPagamento();
+      await confirmarReserva();
+      voltarParaReservas();
     } catch {
       Alert.alert('Erro', 'Não foi possível salvar os dados.');
     } finally {
       setSalvando(false);
     }
+  }
+
+  function montarDadosPagamento(): DadosPagamento {
+    return {
+      reserva: Number(reserva),
+      valor: Number(valor),
+      metodo,
+      status: 'pago',
+    };
+  }
+
+  async function registrarPagamento() {
+    await api.post('/pagamentos/pagamentos/', montarDadosPagamento());
+  }
+
+  async function confirmarReserva() {
+    await api.patch(`/reservas/reservas/${reserva}/`, {
+      status: 'confirmada',
+    });
+  }
+
+  function voltarParaReservas() {
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: 'Reservas' }],
+      }),
+    );
   }
 
   return (

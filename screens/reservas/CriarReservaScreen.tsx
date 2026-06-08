@@ -25,6 +25,22 @@ const STATUS = [
 type Navigation = DrawerNavigationProp<DrawerParamList>;
 type Route = RouteProp<DrawerParamList, 'CriarReserva'>;
 
+type DadosReserva = {
+  hospedagem: number;
+  hospede: number;
+  data_checkin: string;
+  data_checkout: string;
+  quantidade_hospedes: number;
+  valor_total: number;
+  status: string;
+};
+
+type ReservaCriada = {
+  id: number;
+  hospedagem?: number;
+  valor_total?: string | number;
+};
+
 export default function CriarReservaScreen() {
   const navigation = useNavigation<Navigation>();
   const route = useRoute<Route>();
@@ -68,30 +84,38 @@ export default function CriarReservaScreen() {
   async function salvar() {
     try {
       setSalvando(true);
-      const dados = {
-        hospedagem: Number(hospedagem),
-        hospede: Number(hospede),
-        data_checkin: dataCheckin,
-        data_checkout: dataCheckout,
-        quantidade_hospedes: Number(quantidadeHospedes),
-        valor_total: Number(valorTotal),
-        status,
-      };
+      const dados = montarDadosReserva();
       const resposta = await api.post('/reservas/reservas/', dados);
 
-      navigation.navigate('CriarPagamento', {
-        valoresIniciais: {
-          reserva: resposta.data.id,
-          hospedagem: resposta.data.hospedagem ?? dados.hospedagem,
-          valor: resposta.data.valor_total ?? dados.valor_total,
-          status: 'pago',
-        },
-      });
+      irParaPagamento(resposta.data, dados);
     } catch {
       Alert.alert('Erro', 'Não foi possível salvar os dados.');
     } finally {
       setSalvando(false);
     }
+  }
+
+  function montarDadosReserva(): DadosReserva {
+    return {
+      hospedagem: Number(hospedagem),
+      hospede: Number(hospede),
+      data_checkin: dataCheckin,
+      data_checkout: dataCheckout,
+      quantidade_hospedes: Number(quantidadeHospedes),
+      valor_total: Number(valorTotal),
+      status,
+    };
+  }
+
+  function irParaPagamento(reservaCriada: ReservaCriada, dados: DadosReserva) {
+    navigation.navigate('CriarPagamento', {
+      valoresIniciais: {
+        reserva: reservaCriada.id,
+        hospedagem: reservaCriada.hospedagem ?? dados.hospedagem,
+        valor: reservaCriada.valor_total ?? dados.valor_total,
+        status: 'pago',
+      },
+    });
   }
 
   return (

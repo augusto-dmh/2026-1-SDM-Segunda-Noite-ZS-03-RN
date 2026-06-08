@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
 const TOKEN_KEY = '@hospedaria:token';
+const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 let aoNaoAutorizado: (() => void) | null = null;
 
 export type TipoLogin = 'anfitriao' | 'hospede';
@@ -20,7 +21,7 @@ export type SessaoLogin = {
 };
 
 export const api = axios.create({
-  baseURL: process.env.EXPO_PUBLIC_API_URL || 'http://127.0.0.1:8000',
+  baseURL: API_URL,
 });
 
 api.interceptors.response.use(
@@ -82,7 +83,7 @@ export async function cadastrar(
   username: string,
   password: string,
   email: string,
-  tipoLogin: string,
+  tipoLogin: TipoLogin,
 ) {
   const resposta = await api.post('/cadastro/', {
     username,
