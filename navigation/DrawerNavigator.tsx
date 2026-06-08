@@ -32,7 +32,7 @@ import EditarPagamentoScreen from '../screens/pagamentos/EditarPagamentoScreen';
 import MensagensScreen from '../screens/mensagens/MensagensScreen';
 import CriarMensagemScreen from '../screens/mensagens/CriarMensagemScreen';
 import EditarMensagemScreen from '../screens/mensagens/EditarMensagemScreen';
-import { TipoLogin } from '../screens/LoginScreen';
+import { TipoLogin } from '../services/api';
 
 const Drawer = createDrawerNavigator();
 

@@ -10,8 +10,7 @@ import {
   View,
 } from 'react-native';
 
-import { api } from '../../services/api';
-import { TipoLogin } from '../LoginScreen';
+import { api, TipoLogin } from '../../services/api';
 
 type Props = {
   tipoLogin: TipoLogin;
