@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import {
   ActivityIndicator,
@@ -11,6 +12,7 @@ import {
 } from 'react-native';
 
 import { api, TipoLogin } from '../../services/api';
+import { DrawerParamList } from '../../navigation/DrawerNavigator';
 
 type Props = {
   tipoLogin: TipoLogin;
@@ -27,8 +29,10 @@ type Reserva = {
   status: string;
 };
 
+type Navigation = DrawerNavigationProp<DrawerParamList>;
+
 export default function ReservasScreen({ tipoLogin }: Props) {
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<Navigation>();
   const [reservas, setReservas] = useState<Reserva[]>([]);
   const [carregando, setCarregando] = useState(true);
   const ehHospede = tipoLogin === 'hospede';
@@ -39,7 +43,7 @@ export default function ReservasScreen({ tipoLogin }: Props) {
       const resposta = await api.get('/reservas/reservas/');
       setReservas(resposta.data);
     } catch {
-      Alert.alert('Erro', 'Nao foi possivel carregar as reservas.');
+      Alert.alert('Erro', 'Não foi possível carregar as reservas.');
     } finally {
       setCarregando(false);
     }
@@ -62,7 +66,7 @@ export default function ReservasScreen({ tipoLogin }: Props) {
             await api.delete(`/reservas/reservas/${id}/`);
             carregar();
           } catch {
-            Alert.alert('Erro', 'Nao foi possivel excluir a reserva.');
+            Alert.alert('Erro', 'Não foi possível excluir a reserva.');
           }
         },
       },
@@ -108,13 +112,13 @@ export default function ReservasScreen({ tipoLogin }: Props) {
           <View style={styles.card}>
             <Text style={styles.titulo}>Reserva {item.id}</Text>
             <Text style={styles.descricao}>
-              Hospedagem: {item.hospedagem} | Hospede: {item.hospede}
+              Hospedagem: {item.hospedagem} | Hóspede: {item.hospede}
             </Text>
             <Text style={styles.descricao}>
               Check-in: {item.data_checkin} | Check-out: {item.data_checkout}
             </Text>
             <Text style={styles.descricao}>
-              Hospedes: {item.quantidade_hospedes} | Total: R${' '}
+              Hóspedes: {item.quantidade_hospedes} | Total: R${' '}
               {item.valor_total}
             </Text>
             <Text style={styles.descricao}>Status: {item.status}</Text>

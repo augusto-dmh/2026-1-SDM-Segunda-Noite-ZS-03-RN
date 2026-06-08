@@ -28,7 +28,7 @@ export default function LoginScreen({ onLogin }: Props) {
 
   async function fazerLogin() {
     if (!username || !password) {
-      Alert.alert('Atencao', 'Informe usuario e senha.');
+      Alert.alert('Atenção', 'Informe usuário e senha.');
       return;
     }
 
@@ -37,7 +37,7 @@ export default function LoginScreen({ onLogin }: Props) {
       const sessao = await entrar(username, password);
       onLogin(sessao);
     } catch {
-      Alert.alert('Erro', 'Usuario ou senha invalidos.');
+      Alert.alert('Erro', 'Usuário ou senha inválidos.');
     } finally {
       setCarregando(false);
     }
@@ -45,12 +45,12 @@ export default function LoginScreen({ onLogin }: Props) {
 
   async function fazerCadastro() {
     if (!tipoLogin) {
-      Alert.alert('Atencao', 'Escolha o tipo de cadastro.');
+      Alert.alert('Atenção', 'Escolha o tipo de cadastro.');
       return;
     }
 
     if (!username || !email || !password) {
-      Alert.alert('Atencao', 'Informe usuario, email e senha.');
+      Alert.alert('Atenção', 'Informe usuário, e-mail e senha.');
       return;
     }
 
@@ -59,7 +59,7 @@ export default function LoginScreen({ onLogin }: Props) {
       const sessao = await cadastrar(username, password, email, tipoLogin);
       onLogin(sessao);
     } catch {
-      Alert.alert('Erro', 'Nao foi possivel criar o cadastro.');
+      Alert.alert('Erro', 'Não foi possível criar o cadastro.');
     } finally {
       setCarregando(false);
     }
@@ -85,7 +85,7 @@ export default function LoginScreen({ onLogin }: Props) {
               ]}
               onPress={() => selecionarTipo('anfitriao')}
             >
-              <Text style={styles.textoBotao}>Anfitriao</Text>
+              <Text style={styles.textoBotao}>Anfitrião</Text>
             </Pressable>
 
             <Pressable
@@ -95,14 +95,14 @@ export default function LoginScreen({ onLogin }: Props) {
               ]}
               onPress={() => selecionarTipo('hospede')}
             >
-              <Text style={styles.textoBotao}>Hospede</Text>
+              <Text style={styles.textoBotao}>Hóspede</Text>
             </Pressable>
           </View>
         </>
       )}
       <TextInput
         style={styles.input}
-        placeholder="Usuario"
+        placeholder="Usuário"
         autoCapitalize="none"
         value={username}
         onChangeText={setUsername}
@@ -110,7 +110,7 @@ export default function LoginScreen({ onLogin }: Props) {
       {modoFormulario === 'cadastro' && (
         <TextInput
           style={styles.input}
-          placeholder="Email"
+          placeholder="E-mail"
           autoCapitalize="none"
           keyboardType="email-address"
           value={email}
@@ -149,7 +149,7 @@ export default function LoginScreen({ onLogin }: Props) {
       >
         <Text style={styles.textoVoltar}>
           {modoFormulario === 'cadastro'
-            ? 'Ja tenho cadastro'
+            ? 'Já tenho cadastro'
             : 'Criar cadastro'}
         </Text>
       </Pressable>

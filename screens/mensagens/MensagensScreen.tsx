@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import {
   ActivityIndicator,
@@ -11,6 +12,7 @@ import {
 } from 'react-native';
 
 import { api } from '../../services/api';
+import { DrawerParamList } from '../../navigation/DrawerNavigator';
 
 type Mensagem = {
   id: number;
@@ -23,8 +25,10 @@ type Mensagem = {
   lida: boolean;
 };
 
+type Navigation = DrawerNavigationProp<DrawerParamList>;
+
 export default function MensagensScreen() {
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<Navigation>();
   const [mensagens, setMensagens] = useState<Mensagem[]>([]);
   const [carregando, setCarregando] = useState(true);
 
@@ -34,7 +38,7 @@ export default function MensagensScreen() {
       const resposta = await api.get('/mensagens/mensagens/');
       setMensagens(resposta.data);
     } catch {
-      Alert.alert('Erro', 'Nao foi possivel carregar as mensagens.');
+      Alert.alert('Erro', 'Não foi possível carregar as mensagens.');
     } finally {
       setCarregando(false);
     }
@@ -57,7 +61,7 @@ export default function MensagensScreen() {
             await api.delete(`/mensagens/mensagens/${id}/`);
             carregar();
           } catch {
-            Alert.alert('Erro', 'Nao foi possivel excluir a mensagem.');
+            Alert.alert('Erro', 'Não foi possível excluir a mensagem.');
           }
         },
       },
@@ -97,12 +101,12 @@ export default function MensagensScreen() {
               Hospedagem: {item.hospedagem} | De: {item.nome}
             </Text>
             <Text style={styles.descricao}>
-              Email: {item.email} | Telefone: {item.telefone || 'Nao informado'}
+              E-mail: {item.email} | Telefone: {item.telefone || 'Não informado'}
             </Text>
             <Text style={styles.descricao}>Assunto: {item.assunto}</Text>
             <Text style={styles.descricao}>{item.mensagem}</Text>
             <Text style={styles.descricao}>
-              Lida: {item.lida ? 'Sim' : 'Nao'}
+              Lida: {item.lida ? 'Sim' : 'Não'}
             </Text>
 
             <View style={styles.acoes}>

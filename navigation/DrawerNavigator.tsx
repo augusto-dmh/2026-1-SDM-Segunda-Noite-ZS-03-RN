@@ -1,6 +1,6 @@
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
-import CustomDrawerContent from './CustomDrawerContent';
+import CustomDrawerContent from '../components/CustomDrawerContent';
 import AnfitrioesScreen from '../screens/anfitrioes/AnfitrioesScreen';
 import CriarAnfitriaoScreen from '../screens/anfitrioes/CriarAnfitriaoScreen';
 import EditarAnfitriaoScreen from '../screens/anfitrioes/EditarAnfitriaoScreen';
@@ -34,7 +34,49 @@ import CriarMensagemScreen from '../screens/mensagens/CriarMensagemScreen';
 import EditarMensagemScreen from '../screens/mensagens/EditarMensagemScreen';
 import { TipoLogin } from '../services/api';
 
-const Drawer = createDrawerNavigator();
+type RotaComItem = {
+  item: Record<string, any>;
+};
+
+type RotaComValoresIniciais = {
+  valoresIniciais?: Record<string, any>;
+};
+
+export type DrawerParamList = {
+  Inicio: undefined;
+  Usuarios: undefined;
+  CriarUsuario: undefined;
+  EditarUsuario: RotaComItem;
+  Hospedes: undefined;
+  CriarHospede: undefined;
+  EditarHospede: RotaComItem;
+  Anfitrioes: undefined;
+  CriarAnfitriao: undefined;
+  EditarAnfitriao: RotaComItem;
+  Enderecos: undefined;
+  CriarEndereco: undefined;
+  EditarEndereco: RotaComItem;
+  Hospedagens: undefined;
+  CriarHospedagem: undefined;
+  EditarHospedagem: RotaComItem;
+  Reservas: undefined;
+  CriarReserva: RotaComValoresIniciais | undefined;
+  EditarReserva: RotaComItem;
+  Pagamentos: undefined;
+  CriarPagamento: RotaComValoresIniciais | undefined;
+  EditarPagamento: RotaComItem;
+  Mensagens: undefined;
+  CriarMensagem: RotaComValoresIniciais | undefined;
+  EditarMensagem: RotaComItem;
+  Avaliacoes: undefined;
+  CriarAvaliacao: undefined;
+  EditarAvaliacao: RotaComItem;
+  Comodidades: undefined;
+  CriarComodidade: undefined;
+  EditarComodidade: RotaComItem;
+};
+
+const Drawer = createDrawerNavigator<DrawerParamList>();
 
 type Props = {
   onLogout: () => void;
@@ -52,6 +94,13 @@ export default function DrawerNavigator({ onLogout, tipoLogin, hospedeId }: Prop
       drawerContent={(props) => (
         <CustomDrawerContent {...props} onLogout={onLogout} />
       )}
+      screenOptions={{
+        drawerActiveTintColor: '#4B7BE5',
+        drawerLabelStyle: { marginLeft: 0, fontSize: 16 },
+        drawerStyle: { backgroundColor: '#fff', width: 250 },
+        headerStyle: { backgroundColor: '#4B7BE5' },
+        headerTintColor: '#fff',
+      }}
     >
       {!ehAnfitriao && !ehHospede && (
         <>
@@ -62,32 +111,32 @@ export default function DrawerNavigator({ onLogout, tipoLogin, hospedeId }: Prop
           <Drawer.Screen
             name="CriarAnfitriao"
             component={CriarAnfitriaoScreen}
-            options={{ drawerItemStyle: { display: 'none' }, title: 'Criar anfitriao' }}
+            options={{ drawerItemStyle: { display: 'none' }, title: 'Criar anfitrião' }}
           />
           <Drawer.Screen
             name="EditarAnfitriao"
             component={EditarAnfitriaoScreen}
-            options={{ drawerItemStyle: { display: 'none' }, title: 'Editar anfitriao' }}
+            options={{ drawerItemStyle: { display: 'none' }, title: 'Editar anfitrião' }}
           />
           <Drawer.Screen
             name="CriarHospede"
             component={CriarHospedeScreen}
-            options={{ drawerItemStyle: { display: 'none' }, title: 'Criar hospede' }}
+            options={{ drawerItemStyle: { display: 'none' }, title: 'Criar hóspede' }}
           />
           <Drawer.Screen
             name="EditarHospede"
             component={EditarHospedeScreen}
-            options={{ drawerItemStyle: { display: 'none' }, title: 'Editar hospede' }}
+            options={{ drawerItemStyle: { display: 'none' }, title: 'Editar hóspede' }}
           />
           <Drawer.Screen
             name="CriarUsuario"
             component={CriarUsuarioScreen}
-            options={{ drawerItemStyle: { display: 'none' }, title: 'Criar usuario' }}
+            options={{ drawerItemStyle: { display: 'none' }, title: 'Criar usuário' }}
           />
           <Drawer.Screen
             name="EditarUsuario"
             component={EditarUsuarioScreen}
-            options={{ drawerItemStyle: { display: 'none' }, title: 'Editar usuario' }}
+            options={{ drawerItemStyle: { display: 'none' }, title: 'Editar usuário' }}
           />
         </>
       )}
@@ -98,12 +147,12 @@ export default function DrawerNavigator({ onLogout, tipoLogin, hospedeId }: Prop
           <Drawer.Screen
             name="CriarEndereco"
             component={CriarEnderecoScreen}
-            options={{ drawerItemStyle: { display: 'none' }, title: 'Criar endereco' }}
+            options={{ drawerItemStyle: { display: 'none' }, title: 'Criar endereço' }}
           />
           <Drawer.Screen
             name="EditarEndereco"
             component={EditarEnderecoScreen}
-            options={{ drawerItemStyle: { display: 'none' }, title: 'Editar endereco' }}
+            options={{ drawerItemStyle: { display: 'none' }, title: 'Editar endereço' }}
           />
         </>
       )}
@@ -182,12 +231,12 @@ export default function DrawerNavigator({ onLogout, tipoLogin, hospedeId }: Prop
           <Drawer.Screen
             name="CriarAvaliacao"
             component={CriarAvaliacaoScreen}
-            options={{ drawerItemStyle: { display: 'none' }, title: 'Criar avaliacao' }}
+            options={{ drawerItemStyle: { display: 'none' }, title: 'Criar avaliação' }}
           />
           <Drawer.Screen
             name="EditarAvaliacao"
             component={EditarAvaliacaoScreen}
-            options={{ drawerItemStyle: { display: 'none' }, title: 'Editar avaliacao' }}
+            options={{ drawerItemStyle: { display: 'none' }, title: 'Editar avaliação' }}
           />
         </>
       )}
