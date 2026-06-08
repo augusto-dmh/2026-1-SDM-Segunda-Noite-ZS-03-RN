@@ -34,7 +34,49 @@ import CriarMensagemScreen from '../screens/mensagens/CriarMensagemScreen';
 import EditarMensagemScreen from '../screens/mensagens/EditarMensagemScreen';
 import { TipoLogin } from '../services/api';
 
-const Drawer = createDrawerNavigator();
+type RotaComItem = {
+  item: Record<string, any>;
+};
+
+type RotaComValoresIniciais = {
+  valoresIniciais?: Record<string, any>;
+};
+
+export type DrawerParamList = {
+  Inicio: undefined;
+  Usuarios: undefined;
+  CriarUsuario: undefined;
+  EditarUsuario: RotaComItem;
+  Hospedes: undefined;
+  CriarHospede: undefined;
+  EditarHospede: RotaComItem;
+  Anfitrioes: undefined;
+  CriarAnfitriao: undefined;
+  EditarAnfitriao: RotaComItem;
+  Enderecos: undefined;
+  CriarEndereco: undefined;
+  EditarEndereco: RotaComItem;
+  Hospedagens: undefined;
+  CriarHospedagem: undefined;
+  EditarHospedagem: RotaComItem;
+  Reservas: undefined;
+  CriarReserva: RotaComValoresIniciais | undefined;
+  EditarReserva: RotaComItem;
+  Pagamentos: undefined;
+  CriarPagamento: RotaComValoresIniciais | undefined;
+  EditarPagamento: RotaComItem;
+  Mensagens: undefined;
+  CriarMensagem: RotaComValoresIniciais | undefined;
+  EditarMensagem: RotaComItem;
+  Avaliacoes: undefined;
+  CriarAvaliacao: undefined;
+  EditarAvaliacao: RotaComItem;
+  Comodidades: undefined;
+  CriarComodidade: undefined;
+  EditarComodidade: RotaComItem;
+};
+
+const Drawer = createDrawerNavigator<DrawerParamList>();
 
 type Props = {
   onLogout: () => void;
