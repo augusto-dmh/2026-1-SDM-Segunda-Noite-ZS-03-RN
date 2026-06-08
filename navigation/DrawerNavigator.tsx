@@ -1,6 +1,6 @@
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
-import CustomDrawerContent from './CustomDrawerContent';
+import CustomDrawerContent from '../components/CustomDrawerContent';
 import AnfitrioesScreen from '../screens/anfitrioes/AnfitrioesScreen';
 import CriarAnfitriaoScreen from '../screens/anfitrioes/CriarAnfitriaoScreen';
 import EditarAnfitriaoScreen from '../screens/anfitrioes/EditarAnfitriaoScreen';
@@ -52,6 +52,13 @@ export default function DrawerNavigator({ onLogout, tipoLogin, hospedeId }: Prop
       drawerContent={(props) => (
         <CustomDrawerContent {...props} onLogout={onLogout} />
       )}
+      screenOptions={{
+        drawerActiveTintColor: '#4B7BE5',
+        drawerLabelStyle: { marginLeft: 0, fontSize: 16 },
+        drawerStyle: { backgroundColor: '#fff', width: 250 },
+        headerStyle: { backgroundColor: '#4B7BE5' },
+        headerTintColor: '#fff',
+      }}
     >
       {!ehAnfitriao && !ehHospede && (
         <>
